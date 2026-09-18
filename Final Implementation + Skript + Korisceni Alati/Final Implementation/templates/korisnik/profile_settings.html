@@ -1,0 +1,18 @@
+<!-- Nikola Stamenkovic 2020/0723 -->
+{% extends 'korisnik/base_template.html' %}
+{% block title %}Profile Settings{% endblock %}
+{% block sign_name %}Profile Settings {% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Profile Settings</h3>
+             <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn btn-success" type="submit"> Sacuvaj </button>
+            </form>
+        </div>
+    </div>
+
+
+{% endblock %}

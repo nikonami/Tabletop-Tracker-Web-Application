@@ -1,0 +1,50 @@
+{# Masa Jankovic 0462/19 #}
+{# bazni template koji nasledjuju sve moderatorske stranice. #}
+{# zajednicka struktura #}
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Moderator{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'css/moderator.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+{% block content %}
+
+{# naslov stranice #}
+<section class="hero moderator-hero">
+    <div class="hero-content">
+        <h1>{% block hero_title %}{% endblock %}</h1>
+    </div>
+</section>
+
+<main class="container">
+
+    {# poruke o uspehu ili gresci #}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="status-box success-box" style="margin-bottom: 20px;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {# glavni sadrzaj stranice, blok popunjava template #}
+    {% block main_content %}{% endblock %}
+
+</main>
+
+{# blok za JavaScript koji je specifican za svaku stranicu #}
+{% block extra_js %}{% endblock %}
+
+{% endblock %}
+
+</body>
+</html>

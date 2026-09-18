@@ -1,0 +1,175 @@
+{# Masa Jankovic 0462/19 #}
+{# glavna moderatorska stranica za konkretnu igru #}
+{# prikazuje pregled igre i dugmad za sve moderatorske akcije #}
+
+{% extends "moderator/base_moderator.html" %}
+{% load static %}
+
+{% block hero_title %}{{ igra.naziv }}{% endblock %}
+
+{% block main_content %}
+<section class="moderator-game-layout">
+
+    {# leva kolona: dugmad za akcije #}
+    <aside class="card moderator-game-sidebar compact-sidebar">
+        <h2 class="section-title">Funkcionalnosti moderatora</h2>
+        <div class="moderator-actions-stack">
+            <article class="moderator-action-card compact-action-card">
+                <div class="action-card-top">
+                    <h3>Izmena informacija o igri</h3>
+                </div>
+                <p>Ažuriranje naziva, žanra, broja igrača, opisa i slike igre.</p>
+                <a href="{% url 'izmena_igre' igra_id=igra.idigre %}"
+                   class="btn-link-action">
+                    Izmeni informacije o igri
+                </a>
+            </article>
+            <article class="moderator-action-card compact-action-card">
+                <div class="action-card-top">
+                    <h3>Pravljenje statistike</h3>
+                </div>
+                <p>Dodavanje nove statistike specifične za ovu igru.</p>
+                <a href="{% url 'nova_statistika' igra_id=igra.idigre %}"
+                   class="btn-link-action">
+                    Napravi statistiku
+                </a>
+            </article>
+            <article class="moderator-action-card compact-action-card">
+                <div class="action-card-top">
+                    <h3>Pravljenje achievement-a</h3>
+                </div>
+                <p>Definisanje uslova i bedža za posebno dostignuće.</p>
+                <a href="{% url 'novo_dostignuce' igra_id=igra.idigre %}"
+                   class="btn-link-action">
+                    Napravi achievement
+                </a>
+            </article>
+
+            <article class="moderator-action-card compact-action-card">
+                <div class="action-card-top">
+                    <h3>Upravljanje utiscima</h3>
+                </div>
+                <p>Filtriranje, skrivanje ili brisanje korisničkih utisaka.</p>
+                <a href="{% url 'upravljanje_utiscima' igra_id=igra.idigre %}"
+                   class="btn-link-action">
+                    Upravljaj utiscima
+                </a>
+            </article>
+
+        </div>
+    </aside>
+
+    {# desna kolona: pregled igre #}
+    <section class="card moderator-game-main">
+        <h2 class="section-title">Pregled igre</h2>
+
+        <section class="game-overview-panel">
+            <div class="game-overview-image">
+                {% if igra.slikaurl %}
+                    <img src="{{ igra.slikaurl }}" alt="Prikaz slike igre">
+                {% else %}
+                    <img src="{% static 'img/placeholder.png' %}" alt="Nema slike">
+                {% endif %}
+            </div>
+            <div class="game-overview-content">
+                <h3>{{ igra.naziv }}</h3>
+                <p><strong>Žanr: </strong>{{ igra.zanr }}</p>
+                <p><strong>Broj igrača: </strong>{{ igra.minigraca }} - {{ igra.maxigraca }}</p>
+                <p><strong>Godina proizvodnje: </strong>{{ igra.godinaproizvodnje|date:"Y" }}</p>
+                <div class="current-description">
+                    <h3>Kratak opis</h3>
+                    <p>{{ igra.opis|truncatewords:30 }}</p>
+                </div>
+            </div>
+        </section>
+
+        {# sazetak broja stavki #}
+        <div class="moderator-summary column-summary">
+            <div class="summary-item">
+                <span class="summary-label">Statistike</span>
+                <strong>{{ statistike.count }} aktivnih</strong>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Achievement-i</span>
+                <strong>{{ dostignuca.count }} aktivna</strong>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Utisci</span>
+                <strong>{{ utisci.count }} ukupno</strong>
+            </div>
+        </div>
+
+        {# pregled statistika #}
+        <section class="moderator-preview-section">
+            <div class="section-header-row">
+                <h2 class="section-title section-title-small">Postojeće statistike</h2>
+            </div>
+            <div class="preview-chip-list">
+                {% for stat in statistike %}
+                    <span class="preview-chip">{{ stat.naziv }}</span>
+                {% empty %}
+                    <p>Nema kreiranih statistika.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        {# pregled achievement-a #}
+        <section class="moderator-preview-section">
+            <div class="section-header-row">
+                <h2 class="section-title section-title-small">Postojeći achievement-i</h2>
+            </div>
+            <div class="achievement-preview-grid wider-preview-grid">
+                {% for dos in dostignuca %}
+                <article class="mini-card achievement-mini-card">
+                    {% if dos.slikaurl %}
+                        <img src="{{ dos.slikaurl }}" alt="Bedž"
+                             style="width:72px;height:72px;border-radius:18px;">
+                    {% else %}
+                        <div class="mini-badge-placeholder">Bedž</div>
+                    {% endif %}
+                    <h3>{{ dos.naziv }}</h3>
+                    <!-- <p>{{ dos.uslov }} {{ dos.vrednostzadostici }}</p> -->
+                </article>
+                {% empty %}
+                    <p>Nema kreiranih achievement-a.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        {# pregled utisaka #}
+        <section class="moderator-preview-section">
+            <div class="section-header-row">
+                <h2 class="section-title section-title-small">Postojeći utisci</h2>
+                <a href="{% url 'upravljanje_utiscima' igra_id=igra.idigre %}"
+                   class="mini-link">Pogledaj sve</a>
+            </div>
+            <div class="review-preview-list">
+                {% for utisak in utisci %}
+                <article class="mini-card review-mini-card">
+                    <div class="review-mini-header">
+                        <strong>{{ utisak.idkor.korisnickoime }}</strong>
+                        {% if utisak.statusizmene == STATUS_SAKRIVEN %}
+                            <span class="review-status">Sakriven tekst</span>
+                        {% endif %}
+                        <span class="review-stars">
+                            {# zvezdice #}
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= utisak.ocena %}★{% else %}☆{% endif %}
+                            {% endfor %}
+                        </span>
+                    </div>
+                    {% if utisak.statusizmene == STATUS_SAKRIVEN %}
+                        <p>Tekst utiska je sakriven.</p>
+                    {% else %}
+                        <p>{{ utisak.opis|truncatewords:15 }}</p>
+                    {% endif %}
+                </article>
+                {% empty %}
+                    <p>Nema utisaka.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+    </section>
+</section>
+{% endblock %}

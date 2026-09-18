@@ -1,0 +1,35 @@
+    <!-- Nikola Stamenkovic 2020/0723 -->
+{% extends 'korisnik/base_template.html' %}
+{% block title %}Graficki Prikaz{% endblock %}
+{% block content %}
+    {% load static %}
+    <div class="row">
+        <div class="col-sm-12">
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+{% endblock %}
+{% block extra_js %}
+    <script>
+        var ctx = document.getElementById("myChart");
+        var graph = "{{ type }}"
+        new Chart(ctx, {
+            type: graph,
+            data:{
+                labels:{{ labels|safe }},
+                datasets:[{
+                    label: "Prikaz",
+                    data: {{ data }}
+                }],
+                options: {
+                    scales: {
+                        y: {
+                            min: 0,
+                            beginAtZero: true,
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+{% endblock %}

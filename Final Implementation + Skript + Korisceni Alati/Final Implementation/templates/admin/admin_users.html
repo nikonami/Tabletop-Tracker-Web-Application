@@ -1,0 +1,35 @@
+<!-- Darko Omerovic 2017/0653 -->
+<!-- Prikaz svih korisnika(osim admina) sa dugmetom za prelazak na stranicu pojedinacnog korisnika -->
+{% extends 'korisnik/base_template.html' %}
+<!-- Static Files -->
+{% load static %}
+{% block title %}Administratorska stranica {% endblock %}
+{% block extra_headers %}<link rel="stylesheet" type="text/css" href="{% static 'css/admin.css' %}">{% endblock %}
+
+
+{% block sign_name %}Administratorska stranica
+    <p>Upravljanje korisnicima i igrama</p>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <h2 class="section-title">Administracija sistema</h2>
+    <div class="tab-bar">
+        <a class="tab-link" href="{% url 'admin_index' %}">Pocetna</a>
+        <a class="tab-link active" href="{% url 'admin_users' %}">Korisnici</a>
+        <a class="tab-link" href="{% url 'admin_games' %}">Igre</a>
+    </div>
+
+<div class="item-list">
+    {% for korisnik in korisnici %}
+        <div class="card">
+            <h3>{{korisnik.ime}}</h3>
+            <h3>{{korisnik.prezime}}</h3>
+            <div class="actions">
+                <a class="btn btn-select" href="{% url 'admin_user_detalji' korisnik.idkor %}">Izaberi</a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+</div>
+{% endblock %}

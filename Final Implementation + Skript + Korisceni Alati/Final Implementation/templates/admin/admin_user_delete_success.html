@@ -1,0 +1,27 @@
+<!-- Darko Omerovic 2017/0653 -->
+<!-- Stranica uspesnog brisanja izabranog korisnika -->
+{% extends 'korisnik/base_template.html' %}
+{% load static %}
+{% block title %}Korisnik obrisan{% endblock %}
+{% block extra_headers %}<link rel="stylesheet" type="text/css" href="{% static 'css/admin.css' %}">{% endblock %}
+{% block sign_name %}Korisnik je uspešno obrisan
+    <p>{{ korisnik.korisnickoime }}</p>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-card">
+        <p>Korisnik je označen kao obrisan.</p>
+
+        <p><strong>ID korisnika:</strong> {{ korisnik.idkor }}</p>
+        <p><strong>Korisničko ime:</strong> {{ korisnik.korisnickoime }}</p>
+        <p><strong>Email:</strong> {{ korisnik.email }}</p>
+
+        <div class="actions">
+            <a class="btn btn-secondary" href="{% url 'admin_users' %}">
+                Nazad
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

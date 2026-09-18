@@ -1,0 +1,164 @@
+{# Masa Jankovic 0462/19 #}
+{# forma za kreiranje novog achievement-a za igru #}
+
+{% extends "korisnik/base_template.html" %}
+{% load static %}
+
+{% block sign_name %}Pravljenje achievement-a{% endblock %}
+
+{% block content %}
+    <main class="container">
+<section class="achievement-layout">
+
+    {# leva kolona: info o igri #}
+    <aside class="achievement-sidebar card">
+        <h2 class="section-title">Pregled igre</h2>
+        <div class="sidebar-game-card">
+            {% if igra.slikaurl %}
+                <img src="{{ igra.slikaurl }}" alt="Prikaz igre">
+            {% else %}
+                <img src="{% static 'img/placeholder.png' %}" alt="Nema slike">
+            {% endif %}
+            <h3>{{ igra.naziv }}</h3>
+            <p><strong>Dostupne statistike: </strong>
+                {% for stat in statistike %}
+                    {{ stat.naziv }}{% if not forloop.last %}, {% endif %}
+                {% empty %}
+                    nema
+                {% endfor %}
+            </p>
+        </div>
+    </aside>
+
+    {# desna kolona: forma #}
+    <section class="achievement-main card">
+        <h2 class="section-title">Novi achievement</h2>
+
+        <form method="post" class="achievement-form" novalidate>
+            {% csrf_token %}
+
+            {# naziv achievement-a #}
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label for="{{ form.naziv.id_for_label }}">{{ form.naziv.label }}</label>
+                    {{ form.naziv }}
+                    {% if form.naziv.errors %}
+                        <span class="field-error">{{ form.naziv.errors.0 }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {# opis achievement-a #}
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label for="{{ form.opis.id_for_label }}">{{ form.opis.label }}</label>
+                    {{ form.opis }}
+                    {% if form.opis.errors %}
+                        <span class="field-error">{{ form.opis.errors.0 }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# sekcija: uslov za dobijanje #}
+            <section class="achievement-block">
+                <div class="stat-block-header">
+                    <h3>Uslov za dobijanje</h3>
+                </div>
+
+                {# statistika, operator i vrednost #}
+                <div class="form-row three-columns achievement-condition-grid">
+                    <div class="form-group operator-width">
+                        <label for="{{ form.idsta.id_for_label }}">
+                            {{ form.idsta.label }}
+                        </label>
+                        {{ form.idsta }}
+                        {% if form.idsta.errors %}
+                            <span class="field-error">{{ form.idsta.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="form-group operator-width">
+                        <label for="{{ form.uslov_operator.id_for_label }}">
+                            {{ form.uslov_operator.label }}
+                        </label>
+                        {{ form.uslov_operator }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.vrednostzadostici.id_for_label }}">
+                            {{ form.vrednostzadostici.label }}
+                        </label>
+                        {{ form.vrednostzadostici }}
+                        {% if form.vrednostzadostici.errors %}
+                            <span class="field-error">{{ form.vrednostzadostici.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+
+            {# sekcija: url slike bedza #}
+            <section class="achievement-block">
+                <div class="stat-block-header">
+                    <h3>Slika bedža</h3>
+                </div>
+                <div class="form-group full-width">
+                    <label for="{{ form.slikaurl.id_for_label }}">{{ form.slikaurl.label }}</label>
+                    {{ form.slikaurl }}
+                    <p class="input-note">Unesite URL slike bedža (JPG, PNG ili GIF).</p>
+                    {% if form.slikaurl.errors %}
+                        <span class="field-error">{{ form.slikaurl.errors.0 }}</span>
+                    {% endif %}
+                </div>
+            </section>
+
+            {# greska validacije #}
+            {% if form.non_field_errors %}
+                <span class="field-error">{{ form.non_field_errors.0 }}</span>
+            {% endif %}
+
+            <div class="form-actions">
+                <button type="button" class="btn-secondary"
+                        onclick="otvoriDijalog()">Odustani</button>
+                <button type="submit" class="btn-primary">Sačuvaj achievement</button>
+            </div>
+
+        </form>
+    </section>
+</section>
+
+{# dijalog za potvrdu odustajanja #}
+<div class="dialog-overlay" id="dialogOverlay">
+    <div class="dialog-box">
+        <h3 class="dialog-title">Potvrda odustajanja</h3>
+        <p class="dialog-message">
+            Da li ste sigurni da želite da odustanete? Izmene neće biti sačuvane.
+        </p>
+        <div class="dialog-actions">
+            <button type="button" class="btn-secondary"
+                    onclick="zatvoriDijalog()">Nastavi uređivanje</button>
+            <button type="button" class="btn-danger"
+                    onclick="potvrdiOdustajanje()">Odustani</button>
+        </div>
+    </div>
+</div>
+    </main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function otvoriDijalog() {
+        document.getElementById('dialogOverlay').classList.add('active');
+    }
+
+    function zatvoriDijalog() {
+        document.getElementById('dialogOverlay').classList.remove('active');
+    }
+
+    function potvrdiOdustajanje() {
+        zatvoriDijalog();
+        window.location.href = "{% url 'igra' name=igra.naziv %}";
+    }
+
+    document.getElementById('dialogOverlay').addEventListener('click', function(e) {
+        if (e.target === this) zatvoriDijalog();
+    });
+</script>
+{% endblock %}

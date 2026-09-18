@@ -1,0 +1,15 @@
+<!-- Nikola Stamenkovic 2020/0723 -->
+{% extends 'korisnik/base_template.html' %}
+{% block title %}My Achievments{% endblock %}
+{% block sign_name %} Stranica dostignuca korisnika {{ korisnik.korisnickoime }} {% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12">
+            {% for dost in dostignuca %}
+                {% ifchanged %} <hr><h4>{{ dost.dostignuce.get_igra_by_id }}</h4>{% endifchanged %}
+                <img src="{{ dost.dostignuce.slikaurl }}" alt="none" width="50" height="50">
+                <h6>{{ dost.dostignuce.naziv }}</h6>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

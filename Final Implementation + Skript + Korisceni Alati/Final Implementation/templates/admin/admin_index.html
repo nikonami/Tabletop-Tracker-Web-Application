@@ -1,0 +1,75 @@
+<!-- Darko Omerovic 2017/0653 -->
+ <!-- Pocetna stranica svih admina sa izborom pregleda ostalih korisnika i igri  -->
+{% extends 'korisnik/base_template.html' %}
+{% load static %}
+
+{% block title %}Administratorska početna stranica{% endblock %}
+{% block extra_headers %} <link rel="stylesheet" href="{% static 'css/admin.css' %}"> {% endblock %}
+{% block sign_name %}Administratorska stranica
+
+    <p>
+        Dobro došli,
+        {% if trenutni_korisnik.ime %}
+            {{ trenutni_korisnik.ime }}
+        {% else %}
+            {{ trenutni_korisnik.korisnickoime }}
+        {% endif %}
+    </p>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="container">
+    <h2 class="section-title">
+        Administracija sistema
+    </h2>
+
+    <div class="item-list">
+
+        <div class="card">
+            <h3>Korisnici</h3>
+
+            <p>
+                Broj aktivnih korisnika:
+                <strong>{{ broj_korisnika }}</strong>
+            </p>
+
+            <p>
+                Pregled, izmena i brisanje korisničkih naloga.
+            </p>
+
+            <div class="actions">
+                <a
+                    class="btn btn-select"
+                    href="{% url 'admin_users' %}"
+                >
+                    Upravljaj korisnicima
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Igre</h3>
+
+            <p>
+                Broj aktivnih igara:
+                <strong>{{ broj_igara }}</strong>
+            </p>
+
+            <p>
+                Pregled i brisanje igara iz sistema.
+            </p>
+
+            <div class="actions">
+                <a
+                    class="btn btn-select"
+                    href="{% url 'admin_games' %}"
+                >
+                    Upravljaj igrama
+                </a>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}

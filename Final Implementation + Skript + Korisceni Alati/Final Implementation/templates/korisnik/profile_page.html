@@ -1,0 +1,90 @@
+<!-- Nikola Stamenkovic 2020/0723 -->
+{% extends 'korisnik/base_template.html' %}
+{% block title %}Profile{% endblock %}
+{% block sign_name %}Moja profilna stranica {% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-3">
+            <ul class="list-group">
+                <!-- proper links here -->
+                <li class="list-group-item"> <a href="{% url 'my-games' %}"> Moje Igre </a></li>
+                <li class="list-group-item"><a href="{% url 'my-game-lists' %}"> Moje Liste </a></li>
+                <li class="list-group-item"> <a href="{% url 'my-statistics' %}"> Moje Statistike </a> </li>
+                <li class="list-group-item"><a href="{% url 'my-achievements' %}"> Moji Achievmenti </a></li>
+                <li class="list-group-item"> <a href="{% url 'profile-settings' %}"> Profile Settings </a> </li>
+            </ul>
+        </div>
+        <div class="col-sm-6">
+            <!-- can add profile pic here -->
+            <a href="{% url 'find-game' %}" class="btn btn-secondary">Pronadji mi igru</a>
+            <h3> {{ korisnik.korisnickoime }}</h3>
+            <!--for all stats here-->
+
+            <h3> Moje igre </h3>
+            <h6> Imam </h6>
+            {% for list in imam_liste %}
+                <p>{{ list.idigre.naziv }}</p>
+            {% endfor %}
+            <h6> Igrao </h6>
+            {% for list in igrao_liste %}
+                <p>{{ list.idigre.naziv }}</p>
+            {% endfor %}
+            <h6> Wishlist </h6>
+            {% for list in wishlist_list %}
+                <p>{{ list.idigre.naziv }}</p>
+            {% endfor %}
+
+            <h3> Moje Liste </h3>
+            {% for list in liste %}
+                {% ifchanged list.nazivliste %}<hr><h6>{{ list.nazivliste }}</h6>{% endifchanged %}
+                <p>{{ list.idigre.naziv }}</p>
+            {% endfor %}
+
+            <h3> Moje statistike </h3>
+            {% for stat in statistics %}
+                {% ifchanged stat.nazivigre %} <hr><h6> {{ stat.nazivigre }}</h6>{% endifchanged %}
+                <p> {{ stat.nazivstat }} : {{ stat.vrednost }}</p>
+            {% endfor %}
+
+            <h3> Moja dostignuca </h3>
+            {% for dost in dostignuca %}
+                {% ifchanged %} <hr><h4>{{ dost.dostignuce.get_igra_by_id }}</h4>{% endifchanged %}
+                <img src="{{ dost.dostignuce.slikaurl }}" alt="none" width="50" height="50">
+                <h6>{{ dost.dostignuce.naziv }}</h6>
+            {% endfor %}
+        </div>
+        <div class="col-sm-3">
+            <h6> Lista Prijatelja </h6>
+            <form method="POST" action="">
+                {% csrf_token %}
+                <ul class="list-group">
+                    {% for prijatelj in prijateljstva %}
+                        <li class="list-group-item">
+                            {% if prijatelj.idkor2.korisnickoime != korisnik.korisnickoime %}
+                                <p>{{ prijatelj.idkor2.korisnickoime }}</p>
+                            {% else %}
+                                <p>{{ prijatelj.idkor1.korisnickoime }}</p>
+                            {% endif %}
+                            <button class="btn btn-danger" type="submit" name="raskini" value="{{ prijatelj.idkor2.korisnickoime }}">Raskini Prijateljstvo</button>
+                            <!-- Add function connect to the raskini prijateljstvo -->
+                        </li>
+                    {% endfor %}
+                </ul>
+            </form>
+
+            <h6> Incoming Friend Request </h6>
+            <form method="POST" action="">
+                {% csrf_token %}
+                <ul class="list-group">
+                    {% for zahtev in zahtevi %}
+                        <li class="list-group-item">
+                            <p>{{ zahtev.idkor1.korisnickoime }}</p>
+                            <button class="btn btn-success" type="submit" name="prihvati" value="{{ zahtev.idkor1.korisnickoime }}">Prihvati</button>
+                            <button class="btn btn-danger" type="submit" name="odbij" value="{{ zahtev.idkor1.korisnickoime }}">Odbij</button>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </form>
+        </div>
+    </div>
+{% endblock %}

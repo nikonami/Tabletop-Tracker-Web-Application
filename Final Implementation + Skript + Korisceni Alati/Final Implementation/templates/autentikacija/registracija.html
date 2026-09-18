@@ -1,0 +1,151 @@
+<!-- Autor: Sofija Brajovic, 2020/0179 -->
+<!-- Opis: Stranica za registraciju novog korisnika na Tabletop Tracker.
+     Sadrzi formu sa validacijom na klijentskoj strani (format lozinke, poklapanje)
+     i serverskom validacijom (jedinstvenost korisnickog imena i emaila). -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <title>Tabletop Tracker - Registracija</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            margin: 20px;
+        }
+        h2 { text-align: center; color: #333; margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .password-hint {
+            color: #666;
+            font-size: 0.8em;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+        .error-msg {
+            color: #d9534f;
+            font-size: 0.85em;
+            margin-bottom: 15px;
+            border: 1px solid #d9534f;
+            padding: 8px;
+            border-radius: 3px;
+            background: #fff5f5;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover { background-color: #218838; }
+        .login-link { margin-top: 15px; text-align: center; font-size: 14px; color: #606770; }
+        .login-link a { color: #1877f2; text-decoration: none; font-weight: bold; }
+        #clientError { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Registracija</h2>
+
+    {% if greska %}
+    <div class="error-msg">{{ greska }}</div>
+    {% endif %}
+
+    <div id="clientError" class="error-msg"></div>
+
+    <form id="regForm" method="POST" action="{% url 'registracija' %}" onsubmit="return validateForm()">
+        {% csrf_token %}
+
+        <label for="ime">Ime</label>
+        <input type="text" id="ime" name="ime"
+               value="{{ request.POST.ime }}" required maxlength="20">
+
+        <label for="prezime">Prezime</label>
+        <input type="text" id="prezime" name="prezime"
+               value="{{ request.POST.prezime }}" required maxlength="20">
+
+        <label for="korisnicko_ime">Korisničko ime</label>
+        <input type="text" id="korisnicko_ime" name="korisnicko_ime"
+               value="{{ request.POST.korisnicko_ime }}" required maxlength="30">
+
+        <label for="email">E-mail adresa</label>
+        <input type="email" id="email" name="email"
+               value="{{ request.POST.email }}" required maxlength="50">
+
+        <label for="lozinka">Lozinka</label>
+        <div class="password-hint">
+            Min. 8 karaktera (1 veliko, 1 malo slovo, 1 broj i 1 specijalan znak)
+        </div>
+        <input type="password" id="lozinka" name="lozinka" required>
+
+        <label for="potvrda_lozinke">Potvrdi lozinku</label>
+        <input type="password" id="potvrda_lozinke" name="potvrda_lozinke" required>
+
+        <button type="submit">Registruj se</button>
+    </form>
+
+    <div class="login-link">
+        Već imaš nalog? <a href="{% url 'prijava' %}">Prijavi se</a>
+    </div>
+</div>
+
+<script>
+/**
+ * Klijentska validacija forme za registraciju.
+ * Proverava format lozinke i poklapanje obe lozinke pre slanja forme.
+ * Vraca false ako validacija ne prodje (sprecava submit), true inace.
+ */
+function validateForm() {
+    const lozinka = document.getElementById('lozinka').value;
+    const potvrda = document.getElementById('potvrda_lozinke').value;
+    const errorDiv = document.getElementById('clientError');
+
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+    errorDiv.style.display = 'none';
+    errorDiv.innerText = '';
+
+    if (!regex.test(lozinka)) {
+        errorDiv.innerText = 'Format lozinke nije ispravan (min. 8 karaktera, 1 veliko, 1 malo, 1 broj, 1 specijalan znak).';
+        errorDiv.style.display = 'block';
+        return false;
+    }
+
+    if (lozinka !== potvrda) {
+        errorDiv.innerText = 'Lozinke se ne poklapaju!';
+        errorDiv.style.display = 'block';
+        return false;
+    }
+
+    return true;
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!-- Darko Omerovic 2017/0653 -->
+<!-- Stranica pojedinacnog korisnika sa opcijama za brisanje i promenu kredencijala -->
+{% extends 'korisnik/base_template.html' %}
+{% load static %}
+{% block title %}Detalji korisnika{% endblock %}
+{% block extra_headers %}<link rel="stylesheet" type="text/css" href="{% static 'css/admin.css' %}">{% endblock %}
+{% block sign_name %}Detalji korisnika
+    <p>{{ korisnik.korisnickoime }}</p>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="form-card">
+
+        <h2 class="section-title">{{ korisnik.korisnickoime }}</h2>
+
+        {% if info_message %}
+            <p style="color: green; font-weight: bold;">
+                {{ info_message }}
+            </p>
+        {% endif %}
+
+        <p><strong>ID korisnika:</strong> {{ korisnik.idkor }}</p>
+
+        <p><strong>Promenio:</strong>
+            {% if korisnik.promenio %}
+                {{ korisnik.promenio }}
+            {% else %}
+                Nije evidentirano
+            {% endif %}
+        </p>
+
+        <p><strong>Korisničko ime:</strong> {{ korisnik.korisnickoime }}</p>
+        <p><strong>Lozinka:</strong> {{ korisnik.lozinka }}</p>
+        <p><strong>Email:</strong> {{ korisnik.email }}</p>
+        <p><strong>Tip:</strong> {{ korisnik.tip }}</p>
+        <p><strong>Ime:</strong> {{ korisnik.ime }}</p>
+        <p><strong>Prezime:</strong> {{ korisnik.prezime }}</p>
+
+        <p><strong>Datum izmene:</strong>
+            {% if korisnik.datumizmene %}
+                {{ korisnik.datumizmene }}
+            {% else %}
+                Nema izmene
+            {% endif %}
+        </p>
+
+        <p><strong>Obrisan:</strong>
+            {% if korisnik.obrisan %}
+                Da
+            {% else %}
+                Ne
+            {% endif %}
+        </p>
+
+        <p><strong>Privatnost:</strong> {{ korisnik.privatnost }}</p>
+
+        <div class="actions">
+            <a
+                id="btn-brisi"
+                class="btn btn-delete"
+                href="{% url 'admin_user_detalji' korisnik.idkor %}?confirm_delete=1#delete-confirm-box"
+            >
+                Obriši
+            </a>
+
+            <a
+                id="btn-izmeni"
+                class="btn btn-secondary"
+                href="{% url 'admin_user_detalji' korisnik.idkor %}?change=1#change-box"
+            >
+                Izmeni
+            </a>
+
+            <a class="btn btn-secondary" href="{% url 'admin_users' %}">
+                Nazad
+            </a>
+        </div>
+    </div>
+
+    {% if show_delete_confirm %}
+        <div id="delete-confirm-box" class="delete-confirm-box">
+            <p class="delete-warning">
+                Upozorenje: Ova akcija će obrisati korisnika.
+                Za potvrdu unesi tačno korisničko ime:
+                <strong>{{ korisnik.korisnickoime }}</strong>
+            </p>
+
+            {% if delete_error %}
+                <p style="color: red; font-weight: bold;">
+                    {{ delete_error }}
+                </p>
+            {% endif %}
+
+            <form method="post" action="{% url 'admin_user_detalji' korisnik.idkor %}#delete-confirm-box">
+                {% csrf_token %}
+
+                <input type="hidden" name="action" value="delete">
+
+                <input
+                    type="text"
+                    name="username_potvrda"
+                    placeholder="Unesi korisničko ime"
+                    required
+                >
+
+                <div class="actions">
+                    <button type="submit" class="btn btn-delete">
+                        Prihvati
+                    </button>
+
+                    <a
+                        class="btn btn-secondary"
+                        href="{% url 'admin_user_detalji' korisnik.idkor %}?cancel=1#btn-brisi"
+                    >
+                        Odustani
+                    </a>
+                </div>
+            </form>
+        </div>
+    {% endif %}
+
+    {% if show_change_form %}
+        <div id="change-box" class="delete-confirm-box">
+            <p class="delete-warning">
+                Izmena korisnika:
+                <strong>{{ korisnik.korisnickoime }}</strong>
+            </p>
+
+            {% if change_error %}
+                <p style="color: red; font-weight: bold;">
+                    {{ change_error }}
+                </p>
+            {% endif %}
+
+            <form method="post" action="{% url 'admin_user_detalji' korisnik.idkor %}#change-box">
+                {% csrf_token %}
+
+                <input type="hidden" name="action" value="change">
+
+                <input
+                    type="text"
+                    name="korisnickoime"
+                    placeholder="Novo korisničko ime"
+                    value="{{ korisnik.korisnickoime }}"
+                    required
+                >
+
+                <input
+                    type="text"
+                    name="lozinka"
+                    placeholder="Nova lozinka"
+                    required
+                >
+
+                <div class="actions">
+                    <button type="submit" class="btn btn-delete">
+                        Sačuvaj izmene
+                    </button>
+
+                    <a
+                        class="btn btn-secondary"
+                        href="{% url 'admin_user_detalji' korisnik.idkor %}?cancel=1#btn-izmeni"
+                    >
+                        Odustani
+                    </a>
+                </div>
+            </form>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

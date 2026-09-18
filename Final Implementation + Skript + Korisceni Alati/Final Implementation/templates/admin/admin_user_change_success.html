@@ -1,0 +1,24 @@
+<!-- Darko Omerovic 2017/0653 -->
+<!-- Stranica uspesne promene kredencijala izabranog korisnika -->
+{% extends 'korisnik/base_template.html' %}
+{% load static %}
+{% block title %}Izmena potvrđena{% endblock %}
+{% block extra_headers %}<link rel="stylesheet" type="text/css" href="{% static 'css/admin.css' %}">{% endblock %}
+
+{% block sign_name %}Izmena je potvrđena
+    <p>Korisnik {{ korisnik.korisnickoime }} je uspešno izmenjen.</p>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-card">
+        <p>Podaci korisnika su uspešno promenjeni.</p>
+
+        <div class="actions">
+            <a class="btn btn-secondary" href="{% url 'admin_users' %}">
+                Nazad
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

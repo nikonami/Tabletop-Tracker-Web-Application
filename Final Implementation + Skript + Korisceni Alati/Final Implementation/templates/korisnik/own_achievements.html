@@ -1,0 +1,28 @@
+<!-- Nikola Stamenkovic 2020/0723 -->
+{% extends 'korisnik/base_template.html' %}
+{% block title %}My Achievments{% endblock %}
+{% block sign_name %} Moja Dostignuca stranica {% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12">
+            {% for dost in dostignuca %}
+                {% ifchanged %} <hr><h4>{{ dost.dostignuce.get_igra_by_id }}</h4>{% endifchanged %}
+                <img src="{{ dost.dostignuce.slikaurl }}" alt="none" width="50" height="50">
+                <h6>{{ dost.dostignuce.naziv }}</h6>
+                <form method="POST" action="">
+                    <input type="hidden" name="dost_id" value="{{ dost.idvodj.idvodj }}">
+                    {% csrf_token %}
+                    <input type="radio" name="javnost" id="jav1" value="javnostranica">
+                    <label for="jav1">Javno na svojoj stranici</label>
+                    <input type="radio" name="javnost" id="javno1" value="javno">
+                    <label for="javno1">Javno</label>
+                    <input type="radio" name="javnost" id="prijatelji1" value="prijatelji">
+                    <label for="prijatelji1">Samo za Prijatelje Vidljivo</label>
+                    <input type="radio" name="javnost" id="privatno1" value="privatno">
+                    <label for="privatno1">Privatno</label>
+                    <button class="btn btn-outline-success">Sacuvaj</button>
+                </form>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

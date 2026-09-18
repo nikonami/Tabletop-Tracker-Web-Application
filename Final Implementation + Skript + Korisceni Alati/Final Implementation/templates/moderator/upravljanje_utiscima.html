@@ -1,0 +1,335 @@
+{# Masa Jankovic 0462/19 #}
+{# stranica za upravljanje utiscima korisnika #}
+{# akcije se izvrsavaju AJAX-om bez reload-a stranice #}
+
+{% extends "korisnik/base_template.html" %}
+{% load static %}
+
+{% block sign_name %}Upravljanje utiscima{% endblock %}
+
+{% block content %}
+    <main class="container">
+<section class="reviews-layout">
+
+    {# leva kolona: info o igri #}
+    <aside class="reviews-sidebar card">
+        <h2 class="section-title">Pregled igre</h2>
+        <div class="sidebar-game-card">
+            {% if igra.slikaurl %}
+                <img src="{{ igra.slikaurl }}" alt="Pregled igre">
+            {% else %}
+                <img src="{% static 'img/placeholder.png' %}" alt="Nema slike">
+            {% endif %}
+            <h3>{{ igra.naziv }}</h3>
+            <p><strong>Ukupno utisaka: </strong>{{ utisci.count }}</p>
+        </div>
+    </aside>
+
+    <section class="reviews-main">
+
+        {# lista utisaka #}
+        <div class="card reviews-card">
+            <h2 class="section-title">Lista utisaka korisnika</h2>
+
+            {# globalne poruke o uspehu, JS ih dodaje ovde posle AJAX akcije #}
+            <div id="globalPoruke"></div>
+
+            <div class="review-list">
+                {% for utisak in utisci %}
+                {# data atributi koje JS koristi za AJAX URL-ove #}
+                <article class="review-item"
+                        id="utisak-{{ utisak.idigre.idigre }}-{{ utisak.idkor.idkor }}"
+                        data-igra-id="{{ utisak.idigre.idigre }}"
+                        data-kor-id="{{ utisak.idkor.idkor }}"
+                        data-url-obrisi="{% url 'obrisi_utisak' %}"
+                        data-url-filtriraj="{% url 'filtriraj_utisak' %}"
+                        data-url-sakrij="{% url 'sakrij_utisak' %}">
+
+                    <div class="review-header">
+                        <div>
+                            <h3>{{ utisak.idkor.korisnickoime }}</h3>
+                            <div class="review-stars">
+                                {# zvezdice na osnovu ocene #}
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= utisak.ocena %}★{% else %}☆{% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="review-actions">
+                            <button type="button" class="action-btn delete-btn"
+                                    onclick="prikaziDijalog('brisanje', this)">Izbriši</button>
+                            <button type="button" class="action-btn filter-btn"
+                                    onclick="prikaziDijalog('filtriranje', this)">Filtriraj</button>
+                            <button type="button"
+                                    class="action-btn hide-btn {% if utisak.statusizmene == STATUS_SAKRIVEN %}active-action{% endif %}"
+                                    onclick="prikaziDijalog('sakrivanje', this)"
+                                    {% if utisak.statusizmene == STATUS_SAKRIVEN %}disabled{% endif %}>
+                                {% if utisak.statusizmene == STATUS_SAKRIVEN %}Sakriveno{% else %}Sakrij{% endif %}
+                            </button>
+                        </div>
+                    </div>
+
+                    {# prikazuje tekst ili placeholder za sakriven utisak #}
+                    {% if utisak.statusizmene == STATUS_SAKRIVEN %}
+                        <div class="hidden-review-placeholder">
+                            Tekstualni deo utiska je sakriven,
+                            ali ocena i dalje utiče na prosečnu ocenu igre.
+                        </div>
+                    {% else %}
+                        <p class="review-text">{{ utisak.opis }}</p>
+                        {% if utisak.statusizmene == STATUS_FILTRIRAN %}
+                            <div class="sidebar-note success-box">
+                                Utisak je filtriran.
+                            </div>
+                        {% endif %}
+                    {% endif %}
+
+                </article>
+                {% empty %}
+                    <p>Nema utisaka za ovu igru.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        {# dijalog za akciju (skriveni) #}
+        {# <div class="review-grid"> #}
+
+            {# dijalog za brisanje #}
+            <section class="card preview" id="dijalog-brisanje" style="display:none;">
+                <div class="preview-header">
+                    <h3 class="delete-text">Brisanje utiska</h3>
+                </div>
+                <div class="form-group full-width">
+                    <label>Tekst utiska koji se briše:</label>
+                    <p id="brisanje-tekst-utiska" class="review-text"></p>
+                </div>
+                <div class="form-group full-width">
+                    <label for="brisanje-razlog">Razlog brisanja</label>
+                    <textarea id="brisanje-razlog" class="form-control" rows="4"
+                              placeholder="Unesite razlog brisanja utiska"></textarea>
+                    <span class="field-error" id="brisanje-greska" style="display:none;">
+                        Razlog za izmenu je obavezan.
+                    </span>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary"
+                            onclick="zatvoriSveDijaloge()">Odustani</button>
+                    <button type="button" class="btn-primary"
+                            onclick="potvrdiAkciju('brisanje')">Potvrdi</button>
+                </div>
+            </section>
+
+            {# dijalog za filtriranje #}
+            <section class="card preview" id="dijalog-filtriranje" style="display:none;">
+                <div class="preview-header">
+                    <h3 class="filter-text">Filtriranje utiska</h3>
+                </div>
+                <div class="form-group full-width">
+                    <label>Originalni tekst utiska:</label>
+                    <p id="filtriranje-tekst-utiska" class="review-text"></p>
+                </div>
+                <div class="form-group full-width">
+                    <label for="filtriranje-reci">Reči za filtriranje</label>
+                    <input type="text" id="filtriranje-reci" class="form-control"
+                           placeholder="npr. reč1, reč2, reč3">
+                </div>
+                <div class="form-group full-width">
+                    <label for="filtriranje-razlog">Razlog filtriranja</label>
+                    <textarea id="filtriranje-razlog" class="form-control" rows="3"
+                              placeholder="Unesite razlog filtriranja utiska"></textarea>
+                    <span class="field-error" id="filtriranje-greska" style="display:none;">
+                        Razlog za izmenu je obavezan.
+                    </span>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary"
+                            onclick="zatvoriSveDijaloge()">Odustani</button>
+                    <button type="button" class="btn-primary"
+                            onclick="potvrdiAkciju('filtriranje')">Potvrdi</button>
+                </div>
+            </section>
+
+            {# dijalog za sakrivanje #}
+            <section class="card preview" id="dijalog-sakrivanje" style="display:none;">
+                <div class="preview-header">
+                    <h3 class="hide-text">Sakrivanje utiska</h3>
+                </div>
+                <div class="form-group full-width">
+                    <label>Tekst utiska koji se sakriva:</label>
+                    <p id="sakrivanje-tekst-utiska" class="review-text"></p>
+                </div>
+                <div class="form-group full-width">
+                    <label for="sakrivanje-razlog">Razlog sakrivanja</label>
+                    <textarea id="sakrivanje-razlog" class="form-control" rows="4"
+                              placeholder="Unesite razlog za sakrivanje utiska"></textarea>
+                    <span class="field-error" id="sakrivanje-greska" style="display:none;">
+                        Razlog za izmenu je obavezan.
+                    </span>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary"
+                            onclick="zatvoriSveDijaloge()">Odustani</button>
+                    <button type="button" class="btn-primary"
+                            onclick="potvrdiAkciju('sakrivanje')">Potvrdi</button>
+                </div>
+            </section>
+
+        {# </div> #}
+    </section>
+</section>
+    </main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // CSRF token je potreban za svaki AJAX POST zahtev ka Djangu
+    const csrfToken = '{{ csrf_token }}';
+
+    // cuvamo referencu na karticu aktivnog utiska i tip akcije
+    let aktivnaKartica = null;
+    let aktivniTip = null;
+
+    // pronalazi tekst utiska iz DOM-a kartice
+    function getTekstUtiska(kartica) {
+        const el = kartica.querySelector('.review-text');
+        return el ? el.textContent.trim() : '(Tekst nije dostupan)';
+    }
+
+    // prikazuje odgovarajuci dijalog i popunjava preview teksta utiska
+    // html element dugmeta koje je kliknuto (ima parent karticu)
+    function prikaziDijalog(tip, dugme) {
+        zatvoriSveDijaloge();
+        aktivnaKartica = dugme.closest('.review-item');
+        aktivniTip = tip;
+
+        const tekst = getTekstUtiska(aktivnaKartica);
+        document.getElementById(`${tip}-tekst-utiska`).textContent = tekst;
+        document.getElementById(`dijalog-${tip}`).style.display = 'block';
+        document.getElementById(`dijalog-${tip}`).scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // zatvara sve dijaloge i resetuje stanje
+    function zatvoriSveDijaloge() {
+        ['brisanje', 'filtriranje', 'sakrivanje'].forEach(t => {
+            document.getElementById(`dijalog-${t}`).style.display = 'none';
+            document.getElementById(`${t}-greska`).style.display = 'none';
+        });
+        aktivnaKartica = null;
+        aktivniTip = null;
+    }
+
+    // salje AJAX POST zahtev na odgovarajuci URL i obradjuje odgovor
+    // URL se cita iz data atributa na kartici utiska
+    function potvrdiAkciju(tip) {
+        if (!aktivnaKartica) return;
+
+        const greska = document.getElementById(`${tip}-greska`);
+        greska.style.display = 'none';
+
+        let url, body;
+
+        if (tip === 'brisanje') {
+            const razlog = document.getElementById('brisanje-razlog').value.trim();
+            if (!razlog) { greska.style.display = 'block'; return; }
+            url = aktivnaKartica.dataset.urlObrisi;
+	    body = new URLSearchParams({
+            razlog_brisanja: razlog,
+            igra_id: aktivnaKartica.dataset.igraId, 
+            kor_id: aktivnaKartica.dataset.korId,
+    	    });
+
+        } else if (tip === 'filtriranje') {
+            const razlog = document.getElementById('filtriranje-razlog').value.trim();
+            if (!razlog) { greska.style.display = 'block'; return; }
+            const reci = document.getElementById('filtriranje-reci').value.trim();
+            url = aktivnaKartica.dataset.urlFiltriraj;
+	    body = new URLSearchParams({
+            razlog_filtriranja: razlog,
+            reci_za_filtriranje: reci,
+            igra_id: aktivnaKartica.dataset.igraId, 
+            kor_id: aktivnaKartica.dataset.korId,
+    	    });
+
+        } else if (tip === 'sakrivanje') {
+            const razlog = document.getElementById('sakrivanje-razlog').value.trim();
+            if (!razlog) { greska.style.display = 'block'; return; }
+            url = aktivnaKartica.dataset.urlSakrij;
+	    body = new URLSearchParams({
+            razlog_sakrivanja: razlog,
+            igra_id: aktivnaKartica.dataset.igraId, 
+            kor_id: aktivnaKartica.dataset.korId,
+    	    });
+        }
+
+        // saljemo POST zahtev ka Django view-u
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: body.toString(),
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                azurirajDOM(tip, data);
+                zatvoriSveDijaloge();
+                prikaziGlobalnuPoruku(data.poruka);
+            } else {
+                greska.style.display = 'block';
+                greska.textContent = Object.values(data.greske).flat().join(' ');
+            }
+        })
+        .catch(() => {
+            greska.style.display = 'block';
+            greska.textContent = 'Greška u komunikaciji sa serverom.';
+        });
+    }
+
+    //azurira DOM odmah posle uspesne akcije bez reload-a stranice
+    function azurirajDOM(tip, data) {
+        if (!aktivnaKartica) return;
+
+        if (tip === 'brisanje') {
+            // uklanjamo celu karticu utiska iz liste
+            aktivnaKartica.remove();
+
+        } else if (tip === 'filtriranje') {
+            // zamenjujemo tekst filtriranom verzijom
+            const tekstEl = aktivnaKartica.querySelector('.review-text');
+            if (tekstEl && data.filtrirani_tekst) {
+                tekstEl.textContent = data.filtrirani_tekst;
+            }
+
+        } else if (tip === 'sakrivanje') {
+            // zamenjujemo tekst porukom o sakrivanju
+            const tekstEl = aktivnaKartica.querySelector('.review-text');
+            if (tekstEl) {
+                tekstEl.outerHTML = `
+                    <div class="hidden-review-placeholder">
+                        Tekstualni deo utiska je sakriven,
+                        ali ocena i dalje utiče na prosečnu ocenu igre.
+                    </div>`;
+            }
+
+            const dugmeSakrij = aktivnaKartica.querySelector('.hide-btn');
+            if (dugmeSakrij) {
+                dugmeSakrij.textContent = 'Sakriveno';
+                dugmeSakrij.classList.add('active-action');
+                dugmeSakrij.disabled = true;
+            }
+        }
+    }
+
+    // prikazuje globalnu poruku o uspehu i sklanja je posle 4 sekunde
+    function prikaziGlobalnuPoruku(poruka) {
+        const el = document.getElementById('globalPoruke');
+        el.innerHTML = `
+            <div class="sidebar-note success-box" style="margin-bottom:16px;">
+                ${poruka}
+            </div>`;
+        setTimeout(() => { el.innerHTML = ''; }, 4000);
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,27 @@
+<!-- Nikola Stamenkovic 2020/0723 -->
+{% extends 'korisnik/base_template.html' %}
+{% block title %}My Statistics{% endblock %}
+{% block sign_name %}Moje statistike stranica {% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12">
+            {% for stat in statistics %}
+                {% ifchanged %} <hr><h4>{{ stat.nazivigre }}</h4>{% endifchanged %}
+                <h6>{{ stat.nazivstat }} : {{ stat.vrednost }}</h6>
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <input type="hidden" name="stat" value="{{ stat.idvodj }}">
+                    <input type="radio" name="javnost" id="jav" value="javnostranica">
+                    <label for="jav1">Javno na svojoj stranici</label>
+                    <input type="radio" name="javnost" id="javno" value="javno">
+                    <label for="javno1">Javno</label>
+                    <input type="radio" name="javnost" id="prijatelji" value="prijatelji">
+                    <label for="prijatelji1">Samo za Prijatelje Vidljivo</label>
+                    <input type="radio" name="javnost" id="privatno" value="privatno">
+                    <label for="privatno1">Privatno</label>
+                    <button class="btn btn-outline-success">Sacuvaj</button>
+                </form>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

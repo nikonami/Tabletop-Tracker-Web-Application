@@ -1,0 +1,861 @@
+/* Maša Janković - MODERATOR stranice */
+/* Sofija */
+
+
+.search-container {
+    margin-top: 30px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    gap: 10px;
+}
+
+.search-input {
+    flex-grow: 1;
+    padding: 15px;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    outline: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.search-btn {
+    padding: 15px 30px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.search-btn:hover {
+    background-color: #218838;
+}
+
+footer {
+    background: #343a40;
+    color: #adb5bd;
+    text-align: center;
+    padding: 30px;
+    margin-top: 50px;
+    margin-bottom:0;
+    position: absolute;
+    width: 100%;
+}
+.footer p {  /* Selects text inside a <p> tag that is inside a .footer <div> */
+    margin-bottom: 0; /* removes default <p> tag margin from the bottom */
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+header {
+    background-color: #343a40;
+    color: white;
+    padding: 15px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: bold;
+}
+
+.hero {
+    background-color: #007bff;
+    color: white;
+    padding: 80px 50px;
+    text-align: center;
+}
+
+.container {
+    padding: 40px 50px;
+}
+
+.section-title {
+    border-bottom: 3px solid #007bff;
+    padding-bottom: 5px;
+    margin-bottom: 30px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card img {
+    max-width: 100%;
+    border-radius: 8px;
+    height: 180px;
+    object-fit: cover;
+    margin-bottom: 15px;
+}
+.btn-protected {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.bgg-logo {
+    height: 30px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 5px 8px;
+}
+
+.moderator-hero {
+    padding: 60px 50px;
+}
+
+.hero-content {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.edit-layout,
+.statistics-layout,
+.achievement-layout,
+.reviews-layout,
+.moderator-game-layout {
+    display: grid;
+    gap: 30px;
+    align-items: start;
+}
+
+.edit-layout {
+    grid-template-columns: 0.8fr 1fr;
+}
+
+.statistics-layout,
+.moderator-game-layout {
+    grid-template-columns: 0.75fr 1.25fr;
+}
+
+.achievement-layout,
+.reviews-layout {
+    grid-template-columns: 0.9fr 1.4fr;
+}
+
+.info-panel,
+.form-panel,
+.statistics-sidebar,
+.statistics-main,
+.achievement-sidebar,
+.achievement-main,
+.reviews-sidebar,
+.reviews-card,
+.preview,
+.moderator-game-sidebar,
+.moderator-game-main {
+    text-align: left;
+}
+
+/*.moderator-game-main{
+    grid-column: span 1.25;
+}
+
+.moderator-game-sidebar {
+    grid-column: span 0.75;
+}*/
+.game-preview {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.game-preview img,
+.sidebar-game-card img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 10px;
+    border: 1px solid #dee2e6;
+}
+
+.game-preview img {
+    margin-bottom: 0;
+}
+
+.sidebar-game-card img {
+    margin-bottom: 16px;
+}
+
+.game-info h3,
+.current-description h3,
+.sidebar-game-card h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+.current-description,
+.stat-block,
+.achievement-block,
+.review-item,
+.summary-item,
+.moderator-action-card,
+.mini-card {
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    background: #fbfcfe;
+}
+
+.current-description {
+    padding: 18px;
+    margin-bottom: 20px;
+    background: #f8f9fa;
+}
+
+.sidebar-note,
+.moderator-summary {
+    margin-top: 22px;
+}
+
+.moderator-summary {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    flex-wrap: nowrap;
+}
+
+.summary-label {
+    color: #495057;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.game-edit-form,
+.statistics-form,
+.achievement-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.statistics-form,
+.achievement-form {
+    gap: 22px;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.three-columns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.medium-width {
+    max-width: 280px;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #343a40;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea,
+.option-row input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 15px;
+    box-sizing: border-box;
+    background: white;
+    color: #333;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 150px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus,
+.option-row input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.12);
+}
+
+.form-group input[type="radio"]{
+
+}
+
+.input-note {
+    margin: 8px 0 0;
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.field-error {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #dc3545;
+}
+
+.status-box,
+.success-box {
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-weight: 500;
+}
+
+.success-box {
+    background: #e9f7ef;
+    border: 1px solid #b7e4c7;
+    color: #1e7e34;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 5px;
+}
+
+.btn-primary,
+.btn-secondary,
+.option-btn,
+.btn-link-action,
+.action-btn {
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-link-action {
+    border-radius: 8px;
+    padding: 12px 22px;
+    font-size: 15px;
+}
+
+.btn-primary,
+.btn-link-action {
+    background: #28a745;
+    color: white;
+}
+
+.btn-primary:hover,
+.btn-link-action:hover {
+    background: #218838;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+.btn-link-action {
+    display: inline-block;
+    align-self: flex-start;
+    text-decoration: none;
+    padding: 12px 20px;
+}
+
+/* MODERATOR - pravljenje statistike */
+
+.stat-block,
+.achievement-block {
+    padding: 22px;
+}
+
+.stat-block-header,
+.preview-header,
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.stat-block-header {
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.stat-block-header h3,
+.preview-header h3 {
+    margin: 0;
+}
+
+.dropdown-options,
+.review-list,
+.reviews-main,
+.review-preview-list,
+.moderator-actions-stack {
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown-options,
+.review-list,
+.review-preview-list,
+.moderator-actions-stack {
+    gap: 12px;
+}
+
+.reviews-main {
+    gap: 25px;
+}
+
+.option-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+}
+
+.option-actions {
+    margin-top: 14px;
+}
+
+.option-btn {
+    border-radius: 8px;
+    padding: 11px 16px;
+    font-size: 14px;
+}
+
+.add-btn {
+    background: #007bff;
+    color: white;
+}
+
+.add-btn:hover {
+    background: #0069d9;
+}
+
+.remove-btn {
+    background: #f1f3f5;
+    color: #495057;
+    border: 1px solid #dee2e6;
+}
+
+.remove-btn:hover {
+    background: #e9ecef;
+}
+
+/* MODERATOR - pravljenje achievement-a */
+
+.achievement-condition-grid {
+    align-items: start;
+}
+
+.operator-width {
+    max-width: 160px;
+}
+
+.badge-upload-area {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 24px;
+    align-items: center;
+}
+
+.badge-preview {
+    display: flex;
+    justify-content: center;
+}
+
+.badge-placeholder,
+.mini-badge-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #495057;
+    font-weight: 600;
+    box-sizing: border-box;
+}
+
+.badge-placeholder {
+    width: 180px;
+    height: 180px;
+    border-radius: 24px;
+    border: 2px solid #adb5bd;
+    background: linear-gradient(135deg, #eef5ff, #f8f9fa);
+    padding: 20px;
+}
+
+.badge-upload-controls {
+    width: 100%;
+}
+
+/* MODERATOR - upravljanje utiscima */
+
+.review-item {
+    padding: 20px;
+}
+
+.review-header {
+    align-items: flex-start;
+    gap: 18px;
+    margin-bottom: 14px;
+}
+
+.review-header h3 {
+    margin: 0 0 6px;
+}
+
+.review-stars {
+    color: #f59f00;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.review-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    border-radius: 999px;
+    padding: 9px 14px;
+    font-size: 13px;
+}
+
+.delete-btn,
+.delete-text {
+    background: #f8d7da;
+    color: #842029;
+}
+
+.filter-btn,
+.filter-text {
+    background: #fff3cd;
+    color: #8a6d1d;
+}
+
+.hide-btn,
+.hide-text {
+    background: #e2e3e5;
+    color: #41464b;
+}
+
+.active-action {
+    background: #ced4da;
+}
+
+.review-text {
+    margin: 0;
+    line-height: 1.6;
+}
+
+.hidden-review-placeholder {
+    padding: 16px;
+    border-radius: 10px;
+    background: #f1f3f5;
+    color: #495057;
+    font-style: italic;
+}
+
+.review-grid {
+    display: grid;
+    width: 100%;
+    gap: 22px;
+}
+
+.preview-header {
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.preview-header h3 {
+    border: none;
+    border-radius: 999px;
+    padding: 9px 14px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* MODERATOR - glavna stranica */
+
+.compact-sidebar {
+    top: 20px;
+}
+
+.moderator-action-card {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 240px;
+}
+
+.compact-action-card {
+    min-height: auto;
+}
+
+.action-card-top h3 {
+    margin: 12px 0 0;
+}
+
+.game-overview-panel {
+    display: grid;
+    grid-template-columns: minmax(240px, 320px) 1fr;
+    gap: 24px;
+    align-items: start;
+}
+.game-overview-ownership {
+    display: inline-block;
+}
+
+.game-overview-image img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 12px;
+    border: 1px solid #dee2e6;
+    margin-bottom: 0;
+}
+
+.game-overview-content h3 {
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+.column-summary {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.moderator-preview-section {
+    margin-top: 28px;
+}
+
+.section-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+
+.section-title-small {
+    margin: 0;
+    font-size: 24px;
+}
+
+.mini-link {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.mini-link:hover {
+    text-decoration: underline;
+}
+
+.preview-chip-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.preview-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: #eef5ff;
+    border: 1px solid #d6e7ff;
+    color: #184a8b;
+    font-weight: 500;
+}
+
+.achievement-preview-grid,
+.wider-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.mini-card {
+    padding: 18px;
+}
+
+.achievement-mini-card,
+.review-mini-card {
+    text-align: left;
+}
+
+.mini-badge-placeholder {
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
+    border: 2px solid #adb5bd;
+    background: linear-gradient(135deg, #eef5ff, #f8f9fa);
+    margin-bottom: 14px;
+}
+
+.achievement-mini-card h3,
+.review-mini-card h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.achievement-mini-card p,
+.review-mini-card p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+.review-mini-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.review-mini-header strong {
+    margin-right: auto;
+}
+
+.review-status {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #e2e3e5;
+    color: #41464b;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* DIJALOG ZA ODUSTAJANJE */
+
+.dialog-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.dialog-overlay.active {
+    display: flex;
+}
+
+.dialog-box {
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+    padding: 32px 30px 26px;
+    max-width: 440px;
+    width: 90%;
+}
+
+.dialog-title {
+    margin: 0 0 14px;
+    font-size: 19px;
+    color: #343a40;
+}
+
+.dialog-message {
+    margin: 0 0 26px;
+    color: #495057;
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+.dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.btn-danger {
+    border: none;
+    border-radius: 8px;
+    padding: 12px 22px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}

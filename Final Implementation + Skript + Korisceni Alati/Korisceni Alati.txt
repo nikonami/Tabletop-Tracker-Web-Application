@@ -1,0 +1,50 @@
+Korisceni Alati:
+
+Programski jezici i frejmvorci:
+Python 3.14.6 - Bazni jezik koriscen sa Django da se naprave modeli i kontrolleri MVC aplikacije Tabletop Tracker
+Django 6.0.6 - Framework koriscen da se osniva backend i middleware aplikacije Tabletop Tracker
+HTML5, CSS3, JavaScript (ES6+) - Frontend jezici korisceni za razvoj template-a aplikacije.
+SQL - Jezik za Query-ovanje baze podataka koji Django koristi kada se pozivaju njene funkcije za queryovanje modela.
+
+Baza podataka:
+MySQL 8.3.0 - Relational Database Management system koriscen za upravljanje i pravljenje baze podataka koriscen za projekat.
+mysqlclient 2.2.8 - Database driver koriscen da bi python mogao da komunicira sa MySQL-om.
+MySQL Workbench 8.0 - GUI koriscen kako bi se interagovalo sa bazom podataka napravljena preko MySQL-a.
+
+Python biblioteke:
+hashlib (stdlib) - Biblioteka koriscena kako bi se lozinke bile hashirane i un-hashirane.
+re (stdlib) - Regular expression biblioteka koriscena kako bi se proveravali oblici lozinka pre nego sto je dopustena registracija. (veliko slovo, brojevi itd.)
+XMLParser (xml) - Biblioteka koriscena kako bi moglo da se preradi primljeni XML podaci (od strane BGG API-a).
+datetime - Biblioteka za pravljene datuma i upravljanje datumima.
+requests - HTTP biblioteka koriscenja kako bi python mogao direktno da komunicira i parsira HTTP zahteve i odgovore.
+time - Biblioteka za vremensku kontrolu niti koriscena u testovima kako bi se cekalo (Sleep).
+pytz - Datetime kontrola koriscena kako bi se ispravili datumi napravljeni u python-u.
+functools - Biblioteka koriscena kako bi moglo da se napravi novi dekoratori koji mogu da obmotaju (wrap) neke view-ove.
+
+Razvojni alati:
+PyCharm / VS Code - IDE-ovi korisceni za razvoj Python i frontend koda.
+Git 2.55 - Version Control System koriscen spojeno sa Gerrit-om kako bi se sva dokumentacija i sve verzije softvera sacuvali na centralnom repozitorijum.
+CRETE (Gerrit) repozitorijum - Code review system za Git repozitorijum koji omogucava "Code Review" na svakom commit-u kako bi moglo da se odluci za ceo tim sta ce biti dodato u centralni repozitorijum.
+Microsoft Word - Word processing alat koriscen za pisanje dokumentaciji u svim fazama projekta.
+draw.io ili Lucidchart - Website alati korisceni za crtanje dijagrama i testiranje ideja u raznim fazama projekta.
+
+Ostalo:
+BoardGameGeek API - XML API sa Website-a BoardGameGeek, koriscen kako bi se povukli podaci o Drustvenim Igrama sa BoardGameGeek-a i korisceno na Tabletop Tracker-u.
+Youtube Embedded Video Player - Sastavljeno od iframe html tag-a i youtub-ov embedded video format, omogucava da se prikazuju video na stranici igara.
+
+JavaScript: 
+Chart.js 4.5.1 - Javascript biblioteka koriscena kako bi se podaci modelirali i nacrtali kao grafici.
+
+CSS: 
+Bootstrap 5.1.3 - "Frontend Toolkit" koj omogucava malo lepse prikaze HTML stranice bez koriscenja previse CSS-a.
+
+Database Modelling: 
+ERwin Data Modeler - Data modeler koriscen tokom faze 4 kako bi se modelovala baza podakata, koriscena u fazi 5.
+
+UML Modelling: 
+StarUML v7.1.0 - UML modelling aplikacija koriscena kako bi se napravili Use Case, Sequence i Model Diagram-ovi preko UML-a.
+
+Testing: 
+Selenium Webdriver (ukljucujuci StaticLiveServerTestCase iz Django.contrib.staticfiles.testing) - Webdriver alat koriscen za automatizovano testiranje preko selenium-a.
+Djagngo.test - Biblioteka koriscena u fazi testiranja kako bi se testirali svi kontrolleri aplikacije.
+

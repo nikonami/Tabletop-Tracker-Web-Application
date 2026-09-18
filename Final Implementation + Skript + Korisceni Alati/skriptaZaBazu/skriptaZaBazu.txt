@@ -1,0 +1,104 @@
+-- pocetak pokretanje bez korisnika dozvoljeno
+
+INSERT INTO igra
+    (IDIgre, Promenio, Naziv, GodinaProizvodnje, minIgraca, maxIgraca,
+     Opis, slikaURL, videoTutorialURL, DatumIzmene, Obrisan, Zanr)
+VALUES
+    (1, NULL, 'Scythe', '2016-01-01 12:00:00', 1, 5,
+     'Strategijska igra u alternativnoj Evropi.',
+     'https://upload.wikimedia.org/wikipedia/en/1/1a/Scythe_boxart.png',
+     'https://www.youtube.com/embed/ffMLIL5qGQg?si=3MbPzD4kia7nQ6I3',
+     NULL, 0, 'Strategija'),
+
+    (2, NULL, 'Catan', '1995-01-01 12:00:00', 3, 4,
+     'Trgovina resursima i izgradnja naselja.',
+     'https://upload.wikimedia.org/wikipedia/en/a/a3/Catan-2015-boxart.jpg',
+     'https://www.youtube.com/embed/oiQ6SgBzfqY?si=idk3RswwnCWgbClq',
+     NULL, 0, 'Porodicna');
+
+
+INSERT INTO dostignuca
+    (IDDos, VrednostZaDostici, Naziv, Uslov, Kreirao,
+     DatumKreiranja, slikaURL, idigre, idsta, Opis)
+VALUES
+    (1, '3', 'Tri pobede', '>=', NULL,
+     NOW(), 'https://example.com/tri-pobede.jpg',
+     1, 1, 'Ostvari najmanje tri pobede.');
+
+
+
+INSERT INTO statistika
+    (IDSta, IDIgre, Kreirao, DatumKreiranja, Naziv, Tip, Opis,
+     DropDown, TipGrafikona, minVrednost, maxVrednost,
+     jedinicaMere, maxDuzinaTeksta, placeholderTekst,
+     podrazumevanaVrednost)
+VALUES
+    (1, 1, NULL, NOW(), 'Broj pobeda', 'Numericka', 'Ukupan broj pobeda',
+     NULL, 'linijski', 0, 100, 'pobeda', NULL, NULL, NULL);
+
+
+-- kraj pokretanja bez korisnika
+
+
+-- registracija korisnika idkor=1(admin), idkor=2(admin), idkor=3(moderator),idkor=4(korisnik)
+
+
+-- alter tip u bazi za admina i moderatora(iz 1 u 3 i iz 1 u 2)
+
+UPDATE tabletoptracker.korisnik
+SET Tip = CASE
+    WHEN IDKor IN (1, 2) THEN 3
+    WHEN IDKor = 3 THEN 2
+    ELSE Tip
+END
+WHERE IDKor IN (1, 2, 3);
+
+
+-- kraj alter korisnika
+
+
+-- insertovanje posle korisnika
+
+INSERT INTO utisak
+    (IDIgre, IDKor, Promenio, Opis, Ocena, DatumIzmene,
+     RazlogIzmene, StatusIzmene, OriginalniOpis)
+VALUES
+    (1, 4, NULL, 'Odlicna strateska igra.', 5, NULL, NULL, NULL,
+     'Odlicna strateska igra.'),
+
+    (1, 2, NULL, 'Kompleksna, ali veoma zanimljiva.', 4, NULL, NULL, NULL,
+     'Kompleksna, ali veoma zanimljiva.'),
+
+    (1, 3, NULL, 'Veoma dobra igra za vise igraca.', 5, NULL, NULL, NULL,
+     'Veoma dobra igra za vise igraca.');
+
+
+
+INSERT INTO prijatelji
+    (IDKor2, IDKor1, statusZahteva)
+VALUES
+    (2, 1, 2),  -- prihvaceno prijateljstvo izmedju dva admina
+    (3, 4, 1),  -- korisnik  salje zahtev moderatoru 
+    (1, 3, 1);  -- moderator 2 salje zahtev adminu 0
+
+
+
+INSERT INTO vodjenastatistika
+    (IDVodj, Vrednost, Datum, Tekst, IDKor,
+     idigre, idsta, Privatnost)
+VALUES
+    (1, '5', NOW(), 4, 4, 1, 1, 0);
+
+
+INSERT INTO korisnikdostignuca
+    (IDVodj, Datum, privatnost, dostignuce)
+VALUES
+    (1, NOW(), 0, 1);
+
+
+INSERT INTO listaigara
+    (IDListe, IDKor, IDIgre, NazivListe, Privatnost)
+VALUES
+    (1, 4, 1, 'Omiljene igre', 0);
+
+COMMIT;

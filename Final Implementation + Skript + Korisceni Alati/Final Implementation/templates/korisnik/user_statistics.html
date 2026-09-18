@@ -1,0 +1,14 @@
+<!-- Nikola Stamenkovic 2020/0723 -->
+{% extends 'korisnik/base_template.html' %}
+{% block title %}My Statistics{% endblock %}
+{% block sign_name %}Stranica statistike korisnika {{ korisnik.korisnickoime }} {% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12">
+            {% for stat in statistics %}
+                {% ifchanged %} <hr><h4>{{ stat.nazivigre }}</h4>{% endifchanged %}
+                <h6>{{ stat.nazivstat }} : {{ stat.vrednost }}</h6>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

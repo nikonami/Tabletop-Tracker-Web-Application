@@ -1,0 +1,108 @@
+<!-- Darko Omerovic 2017/0653 -->
+<!-- Stranica pojedinacne igre sa opcijom za brisanje date igre -->
+{% extends 'korisnik/base_template.html' %}
+{% load static %}
+{% block title %}Detalji igre{% endblock %}
+{% block extra_headers %}<link rel="stylesheet" type="text/css" href="{% static 'css/admin.css' %}"> {% endblock %}
+{% block sign_name %}Detalji igre
+    <p>{{ igra.naziv }}</p>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="form-card">
+
+        <h2 class="section-title">{{ igra.naziv }}</h2>
+
+        <p><strong>ID igre:</strong> {{ igra.idigre }}</p>
+
+        <p><strong>Promenio:</strong>
+            {% if igra.promenio %}
+                {{ igra.promenio.korisnickoime }}
+            {% else %}
+                Nije evidentirano
+            {% endif %}
+        </p>
+
+        <p><strong>Naziv:</strong> {{ igra.naziv }}</p>
+        <p><strong>Godina proizvodnje:</strong> {{ igra.godinaproizvodnje }}</p>
+        <p><strong>Minimalan broj igrača:</strong> {{ igra.minigraca }}</p>
+        <p><strong>Maksimalan broj igrača:</strong> {{ igra.maxigraca }}</p>
+        <p><strong>Opis:</strong> {{ igra.opis }}</p>
+
+        <p><strong>Slika URL:</strong>
+            <a href="{{ igra.slikaurl }}" target="_blank">{{ igra.slikaurl }}</a>
+        </p>
+
+        {% if igra.slikaurl %}
+            <img src="{{ igra.slikaurl }}" alt="{{ igra.naziv }}" style="max-width: 300px; border-radius: 12px; margin: 15px 0;">
+        {% endif %}
+
+        <p><strong>Video tutorial URL:</strong>
+            <a href="{{ igra.videotutorialurl }}" target="_blank">{{ igra.videotutorialurl }}</a>
+        </p>
+
+        <p><strong>Datum izmene:</strong>
+            {% if igra.datumizmene %}
+                {{ igra.datumizmene }}
+            {% else %}
+                Nema izmene
+            {% endif %}
+        </p>
+
+        <p><strong>Obrisan:</strong>
+            {% if igra.obrisan %}
+                Da
+            {% else %}
+                Ne
+            {% endif %}
+        </p>
+
+        <p><strong>Žanr:</strong>
+            {% if igra.zanr %}
+                {{ igra.zanr }}
+            {% else %}
+                Nije unet
+            {% endif %}
+        </p>
+
+        <div class="actions">
+            <a id="btn-brisi" class="btn btn-delete" href="{% url 'admin_game_detalji' igra.idigre %}?confirm_delete=1#delete-confirm-box">Obrisi</a>
+            <a class="btn btn-secondary" href="{% url 'admin_games' %}">Nazad</a>
+        </div>
+    </div>
+    {% if show_delete_confirm %}
+        <div id="delete-confirm-box" class="delete-confirm-box">
+            <p class="delete-warning">
+                Upozorenje: Ova akcija će obrisati igru.
+                Za potvrdu unesi tačan naziv igre:
+                <strong>{{ igra.naziv }}</strong>
+            </p>
+            {% if delete_error %}
+                <p style="color: red; font-weight: bold;">
+                    {{ delete_error }}
+                </p>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+
+                <input
+                    type="text"
+                    name="naziv_potvrda"
+                    placeholder="Unesi naziv igre"
+                    required
+                >
+
+                <div class="actions">
+                    <button type="submit" class="btn btn-delete">
+                        Prihvati
+                    </button>
+
+                    <a class="btn btn-secondary" href="{% url 'admin_game_detalji' igra.idigre %}#btn-brisi">
+                        Odustani
+                    </a>
+                </div>
+            </form>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

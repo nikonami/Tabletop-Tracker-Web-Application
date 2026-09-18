@@ -1,0 +1,29 @@
+<!-- Nikola Stamenkovic 2020/0723 -->
+{% extends 'korisnik/base_template.html' %}
+{% block title %}My Game Lists{% endblock %}
+{% block sign_name %}Moje Igre stranica {% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12">
+            {% for list in lists %}
+                {% ifchanged list.nazivliste%} <hr><h4>{{ list.nazivliste }}</h4>{% endifchanged %}
+
+                <p>{{ list.idigre.naziv }}</p>
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <input type="hidden" name="zaigru" value="{{ list.idigre.naziv }}">
+                    <input type="hidden" name="lista" value="{{ list.nazivliste }}">
+                    <input type="radio" name="javnost" id="jav1" value="javnostranica">
+                    <label for="jav1">Javno na svojoj stranici</label>
+                    <input type="radio" name="javnost" id="javno1" value="javno">
+                    <label for="javno1">Javno</label>
+                    <input type="radio" name="javnost" id="prijatelji1" value="prijatelji">
+                    <label for="prijatelji1">Samo za Prijatelje Vidljivo</label>
+                    <input type="radio" name="javnost" id="privatno1" value="privatno">
+                    <label for="privatno1">Privatno</label>
+                    <button class="btn btn-outline-success">Sacuvaj</button>
+                </form>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

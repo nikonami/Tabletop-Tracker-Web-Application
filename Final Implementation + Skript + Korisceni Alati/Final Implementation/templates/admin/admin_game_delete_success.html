@@ -1,0 +1,25 @@
+<!-- Darko Omerovic 2017/0653 -->
+<!-- Stranica uspesnog brisanja igre -->
+{% extends 'korisnik/base_template.html' %}
+{% load static %}
+{% block title %}Brisanje uspešno{% endblock %}
+{% block extra_headers %}<link rel="stylesheet" type="text/css" href="{% static 'css/admin.css' %}">{% endblock %}
+{% block sign_name %}Brisanje uspešno
+    <p>Igra je uspešno obrisana.</p>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-card">
+        <p class="message-box message-success">
+            Igra <strong>{{ igra.naziv }}</strong> je uspešno označena kao obrisana.
+        </p>
+
+        <div class="actions">
+            <a class="btn btn-secondary" href="{% url 'admin_games' %}">
+                Nazad na igre
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,78 @@
+<!-- Autor: Sofija Brajovic, 2020/0179 -->
+<!-- Opis: Pocetna stranica dostupna svim posetiocima (gostima).
+     Prikazuje istaknute igre iz baze i omogucava pretragu na klijentskoj strani. -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <title>Tabletop Tracker - Početna</title>
+    <link rel="stylesheet" href="{% static 'redundant/autentikacija/css/ostali_posetioci.css' %}">
+</head>
+<body>
+
+<header>
+    <div class="logo"><strong>Tabletop Tracker</strong></div>
+    <div class="nav-links">
+        <a href="{% url 'prijava' %}">Prijava</a>
+        <a href="{% url 'registracija' %}" style="background: #28a745; padding: 10px 20px; border-radius: 25px;">Registruj se</a>
+    </div>
+</header>
+
+<div class="hero">
+    <h1>Dobrodošli na Tabletop Tracker</h1>
+    <p>Pratite svoje omiljene društvene igre, statistike i dostignuća.</p>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Pretraži igre">
+        <button class="search-btn" onclick="executeSearch()">Pretraži</button>
+    </div>
+</div>
+
+<div class="container">
+    <h2 class="section-title">Istaknute igre</h2>
+    <div class="grid" id="gameGrid">
+        {% for igra in igre %}
+        <div class="card" data-name="{{ igra.naziv|lower }}">
+            {% if igra.slikaurl %}
+            <img src="{{ igra.slikaurl }}" alt="{{ igra.naziv }}">
+            {% else %}
+            <img src="https://via.placeholder.com/280x180?text={{ igra.naziv }}" alt="{{ igra.naziv }}">
+            {% endif %}
+            <h3>{{ igra.naziv }}</h3>
+            <p>{{ igra.opis|truncatechars:80 }}</p>
+            <a href="{% url 'prijava' %}" class="btn-protected" style="text-decoration: none; display: inline-block;">
+                Dodaj u kolekciju
+            </a>
+        </div>
+        {% empty %}
+        <p>Trenutno nema dostupnih igara.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<footer>
+    <p>Tabletop Tracker | Tim: DNMS</p>
+</footer>
+
+<script>
+/**
+ * Filtrira kartice igara u gridu na osnovu unosa u polje za pretragu.
+ * Skriva kartice ciji naziv ne odgovara unetom tekstu (case-insensitive).
+ */
+function executeSearch() {
+    const query = document.getElementById('searchInput').value.toLowerCase().trim();
+    const cards = document.querySelectorAll('#gameGrid .card');
+    cards.forEach(card => {
+        const name = card.getAttribute('data-name') || '';
+        card.style.display = name.includes(query) ? '' : 'none';
+    });
+}
+
+document.getElementById('searchInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') executeSearch();
+});
+</script>
+
+</body>
+</html>

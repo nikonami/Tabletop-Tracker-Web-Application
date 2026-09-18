@@ -1,0 +1,48 @@
+<!-- Nikola Stamenkovic 2020/0723 -->
+{% extends 'korisnik/base_template.html' %}
+{% block title %} Front Page {% endblock %}
+{% block sign_name %}Front Stranica za Igre {% endblock %}
+{% block sign_search %}
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Pretraži igre">
+        <button class="search-btn" onclick="executeSearch()">Pretraži</button>
+    </div>
+{% endblock %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-sm-12">
+            <h2 class="section-title">Istaknute igre</h2>
+            <div class="grid" id="gameGrid">
+                {% for igra in igre %}
+                <div class="card" data-name="{{ igra.naziv|lower }}" id="{{ igra.naziv }}">
+                    <img src={{ igra.slikaurl }} alt="game" class="card-img-top" style="width:200px; height:150px;">
+                    <div class="card-body">
+                        <h4 class="card-title">{{ igra.naziv }}</h4>
+                        <p class="card-text"> {{ igra.opis }} </p>
+                        <a href="{% url 'igra' igra.naziv %}" class="btn btn-outline-primary">Stranica Igre</a> <!-- url to game -->
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <script>
+    /**
+     * Filtrira kartice igara u gridu na osnovu unosa u polje za pretragu.
+     * Skriva kartice ciji naziv ne odgovara unetom tekstu (case-insensitive).
+     */
+    function executeSearch() {
+        const query = document.getElementById('searchInput').value.toLowerCase().trim();
+        const cards = document.querySelectorAll('#gameGrid .card');
+        cards.forEach(card => {
+            const name = card.getAttribute('data-name') || '';
+            card.style.display = name.includes(query) ? '' : 'none';
+        });
+    }
+
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') executeSearch();
+    });
+    </script>
+{% endblock %}

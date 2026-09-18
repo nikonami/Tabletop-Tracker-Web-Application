@@ -1,0 +1,278 @@
+{# Masa Jankovic0462/19 #}
+{# forma za kreiranje nove statistike za igru #}
+{# JS pokazuje ili skriva sekcije u zavisnosti od odabranog tipa (numericka, dropdown, da/ne, tekstualna) #}
+
+{% extends "korisnik/base_template.html" %}
+{% load static %}
+
+{% block sign_name %}Pravljenje statistike o igri{% endblock %}
+
+{% block content %}
+    <main class="container">
+<section class="statistics-layout">
+
+    {# leva kolona: info o igri #}
+    <aside class="statistics-sidebar card">
+        <h2 class="section-title">Pregled igre</h2>
+        <div class="sidebar-game-card">
+            {% if igra.slikaurl %}
+                <img src="{{ igra.slikaurl }}" alt="Prikaz igre">
+            {% else %}
+                <img src="{% static 'img/placeholder.png' %}" alt="Nema slike">
+            {% endif %}
+            <h3>{{ igra.naziv }}</h3>
+            <p><strong>Žanr: </strong>{{ igra.zanr }}</p>
+            <p><strong>Broj igrača: </strong>{{ igra.minigraca }} - {{ igra.maxigraca }}</p>
+            <p><strong>Godina proizvodnje: </strong>{{ igra.godinaproizvodnje|date:"Y" }}</p>
+        </div>
+    </aside>
+
+    {# desna kolona: forma #}
+    <section class="statistics-main card">
+        <h2 class="section-title">Nova statistika</h2>
+
+        <form method="post" class="statistics-form" id="statistikaForm" novalidate>
+            {% csrf_token %}
+
+            {# skriveno polje, JS upisuje dropdown opcije #}
+            {{ form.dropdown_opcije_tekst }}
+
+            {# naziv statistike #}
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label for="{{ form.naziv.id_for_label }}">{{ form.naziv.label }}</label>
+                    {{ form.naziv }}
+                    {% if form.naziv.errors %}
+                        <span class="field-error">{{ form.naziv.errors.0 }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# opis statistike #}
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label for="{{ form.opis.id_for_label }}">{{ form.opis.label }}</label>
+                    {{ form.opis }}
+                    {% if form.opis.errors %}
+                        <span class="field-error">{{ form.opis.errors.0 }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# tip statistike i tip grafikona #}
+            <div class="form-row two-columns">
+                <div class="form-group">
+                    <label for="{{ form.tip_stat.id_for_label }}">{{ form.tip_stat.label }}</label>
+                    {{ form.tip_stat }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.tip_grafikona.id_for_label }}">{{ form.tip_grafikona.label }}</label>
+                    {{ form.tip_grafikona }}
+                </div>
+            </div>
+
+            {# greska validacije #}
+            {% if form.non_field_errors %}
+                <span class="field-error">{{ form.non_field_errors.0 }}</span>
+            {% endif %}
+
+            {# deo za NUMERICKU statistiku #}
+            {# prikazuje se samo ako je tip numericka statistika #}
+            <section class="stat-block" id="sekcija-numericka" style="display:none;">
+                <div class="stat-block-header">
+                    <h3>Numerička statistika</h3>
+                </div>
+                <div class="form-row three-columns">
+                    <div class="form-group">
+                        <label for="{{ form.min_vrednost.id_for_label }}">
+                            {{ form.min_vrednost.label }}
+                        </label>
+                        {{ form.min_vrednost }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.max_vrednost.id_for_label }}">
+                            {{ form.max_vrednost.label }}
+                        </label>
+                        {{ form.max_vrednost }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.jedinica_mere.id_for_label }}">
+                            {{ form.jedinica_mere.label }}
+                        </label>
+                        {{ form.jedinica_mere }}
+                    </div>
+                </div>
+            </section>
+
+            {# deo za DROPDOWN statistiku #}
+            {# prikazuje se samo ako je tip dropdown #}
+            <section class="stat-block" id="sekcija-dropdown" style="display:none;">
+                <div class="stat-block-header">
+                    <h3>Drop-down statistika</h3>
+                </div>
+                {# JS dinamički dodaje redove sa opcijama ovde #}
+                <div class="dropdown-options" id="dropdownOpcije"></div>
+                <div class="option-actions">
+                    <button type="button" class="option-btn add-btn"
+                            onclick="dodajOpciju()">Dodaj opciju</button>
+                </div>
+                <span class="field-error" id="dropdown-greska" style="display:none;">
+                    Morate dodati bar jednu opciju za drop-down statistiku.
+                </span>
+            </section>
+
+            {# deo za DA/NE statistiku #}
+            {# prikazuje se samo ako je tip statistike da/ne #}
+            <section class="stat-block" id="sekcija-da-ne" style="display:none;">
+                <div class="stat-block-header">
+                    <h3>Da/Ne statistika</h3>
+                </div>
+                <div class="form-row">
+                    <div class="form-group medium-width">
+                        <label for="{{ form.podrazumevana_vrednost.id_for_label }}">
+                            {{ form.podrazumevana_vrednost.label }}
+                        </label>
+                        {{ form.podrazumevana_vrednost }}
+                    </div>
+                </div>
+            </section>
+
+            {# deo za TEKSTUALNU statistiku #}
+            {# prikazuje se samo kad je tip tekstualna statistika #}
+            <section class="stat-block" id="sekcija-tekstualna" style="display:none;">
+                <div class="stat-block-header">
+                    <h3>Tekstualna statistika</h3>
+                </div>
+                <div class="form-row two-columns">
+                    <div class="form-group">
+                        <label for="{{ form.max_duzina_teksta.id_for_label }}">
+                            {{ form.max_duzina_teksta.label }}
+                        </label>
+                        {{ form.max_duzina_teksta }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.placeholder_tekst.id_for_label }}">
+                            {{ form.placeholder_tekst.label }}
+                        </label>
+                        {{ form.placeholder_tekst }}
+                    </div>
+                </div>
+            </section>
+
+            <div class="form-actions">
+                <button type="button" class="btn-secondary"
+                        onclick="otvoriDijalog()">Odustani</button>
+                <button type="submit" class="btn-primary"
+                        onclick="return pripremiFormu()">Sačuvaj statistiku</button>
+            </div>
+
+        </form>
+    </section>
+</section>
+
+{# dijalog za potvrdu odustajanja #}
+<div class="dialog-overlay" id="dialogOverlay">
+    <div class="dialog-box">
+        <h3 class="dialog-title">Potvrda odustajanja</h3>
+        <p class="dialog-message">
+            Da li ste sigurni da želite da odustanete? Izmene neće biti sačuvane.
+        </p>
+        <div class="dialog-actions">
+            <button type="button" class="btn-secondary"
+                    onclick="zatvoriDijalog()">Nastavi uređivanje</button>
+            <button type="button" class="btn-danger"
+                    onclick="potvrdiOdustajanje()">Odustani</button>
+        </div>
+    </div>
+</div>
+    </main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // mapiranje vrednosti select-a na id sekcije u html-u
+    const sekcije = {
+        'numericka':  'sekcija-numericka',
+        'dropdown':   'sekcija-dropdown',
+        'da_ne':      'sekcija-da-ne',
+        'tekstualna': 'sekcija-tekstualna',
+    };
+
+    const tipSelect = document.getElementById('id_tip_stat');
+
+    // sakriva sve sekcije, pa prikazuje samo odgovarajucu
+    function osveziSekcije() {
+        Object.values(sekcije).forEach(id => {
+            document.getElementById(id).style.display = 'none';
+        });
+        const odabrani = tipSelect.value;
+        if (sekcije[odabrani]) {
+            document.getElementById(sekcije[odabrani]).style.display = 'block';
+        }
+    }
+
+    // osvezava sekcije na promenu select-a i odmah pri ucitavanju
+    tipSelect.addEventListener('change', osveziSekcije);
+    osveziSekcije();
+
+    // dinamicko dodavanje i brisanje dropdown opcija ──
+    let brojOpcija = 0;
+
+    // dodaje novi red za unos opcije u dropdown listu
+    function dodajOpciju(vrednost = '') {
+        brojOpcija++;
+        const kontejner = document.getElementById('dropdownOpcije');
+        const red = document.createElement('div');
+        red.className = 'option-row';
+        red.innerHTML = `
+            <input type="text" class="dropdown-opcija" value="${vrednost}"
+                   aria-label="Opcija ${brojOpcija}">
+            <button type="button" class="option-btn remove-btn"
+                    onclick="this.parentElement.remove()">Obriši</button>
+        `;
+        kontejner.appendChild(red);
+    }
+
+    // ako forma vraca gresku obnavljamo vec unete opcije
+    const sacuvaneOpcije = document.getElementById('id_dropdown_opcije_tekst').value;
+    if (sacuvaneOpcije) {
+        sacuvaneOpcije.split(',').forEach(o => {
+            if (o.trim()) dodajOpciju(o.trim());
+        });
+    }
+
+    // pre slanja forme sakuplja dropdown opcije u skriveno polje
+    // ne salje formu ako nema opcija
+    function pripremiFormu() {
+        if (tipSelect.value === 'dropdown') {
+            const opcije = [...document.querySelectorAll('.dropdown-opcija')]
+                .map(i => i.value.trim())
+                .filter(Boolean);
+            if (opcije.length === 0) {
+                document.getElementById('dropdown-greska').style.display = 'block';
+                return false;
+            }
+            document.getElementById('id_dropdown_opcije_tekst').value = opcije.join(',');
+        }
+        return true;
+    }
+
+    // dijalog za odustajanje
+    function otvoriDijalog() {
+        document.getElementById('dialogOverlay').classList.add('active');
+    }
+
+    function zatvoriDijalog() {
+        document.getElementById('dialogOverlay').classList.remove('active');
+    }
+
+    function potvrdiOdustajanje() {
+        zatvoriDijalog();
+        window.location.href = "{% url 'igra' name=igra.naziv %}";
+    }
+
+    document.getElementById('dialogOverlay').addEventListener('click', function(e) {
+        if (e.target === this) zatvoriDijalog();
+    });
+</script>
+{% endblock %}

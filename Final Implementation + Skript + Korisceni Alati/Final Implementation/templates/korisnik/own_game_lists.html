@@ -1,0 +1,84 @@
+<!-- Nikola Stamenkovic 2020/0723 -->
+{% extends 'korisnik/base_template.html' %}
+{% block title %}My Game Lists{% endblock %}
+{% block sign_name %} Moje Liste Igara stranica {% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12">
+            <!-- button for creating a list -->
+            <!-- make it a modal -->
+            <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#napravilistu"> Napravi Listu </button>
+                    <div class="modal" id="napravilistu">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title"> Napravi listu </h4>
+                                    <button class="btn-close" type="button" data-bs-dismiss="modal"></button>
+                                </div>
+                                <form method="POST" action="">
+                                    {% csrf_token %}
+                                    <div class="modal-body">
+                                        <input type="hidden" name="currlist" value="{{ list.nazivliste }}">
+                                        <label>
+                                            <input type="text" name="list-name">
+                                        </label>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn-success" type="submit" data-bs-dismiss="modal" name="make-list"> Napravi Listu </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+            {% for list in lists %}
+                {% ifchanged list.nazivliste%} <hr><h4>{{ list.nazivliste }}</h4>{% endifchanged %}
+                {% ifchanged list.nazivliste %}<form method="POST" action="">
+                    {% csrf_token %}
+                    <input type="hidden" name="zalistu" value="{{ list.nazivliste }}">
+                    <input type="radio" name="javnost" id="jav1" value="javnostranica">
+                    <label for="jav1">Javno na svojoj stranici</label>
+                    <input type="radio" name="javnost" id="javno1" value="javno">
+                    <label for="javno1">Javno</label>
+                    <input type="radio" name="javnost" id="prijatelji1" value="prijatelji">
+                    <label for="prijatelji1">Samo za Prijatelje Vidljivo</label>
+                    <input type="radio" name="javnost" id="privatno1" value="privatno">
+                    <label for="privatno1">Privatno</label>
+                    <button class="btn btn-outline-success" name="privatnost-submit">Sacuvaj</button>
+                </form>{% endifchanged %}
+                {% ifchanged list.nazivliste %}
+                    <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#izbaciIzListe"> Izbaci iz liste</button>
+                    <div class="modal" id="izbaciIzListe">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title"> Izbaci iz liste </h4>
+                                    <button class="btn-close" type="button" data-bs-dismiss="modal"></button>
+                                </div>
+                                <form method="POST" action="">
+                                    {% csrf_token %}
+                                    <div class="modal-body">
+                                        <input type="hidden" name="currlist" value="{{ list.nazivliste }}">
+                                        <label>
+                                            <select name="listaitem">
+                                                {% for lista in lists %}
+                                                    {% if lista.nazivliste == list.nazivliste %}
+                                                        <option value="{{ lista.idigre.naziv }}">{{ lista.idigre.naziv }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </label>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn-success" type="submit" data-bs-dismiss="modal" name="list-remove"> Izbaci </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endifchanged %}
+                <p>{{ list.idigre.naziv }}</p>
+
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

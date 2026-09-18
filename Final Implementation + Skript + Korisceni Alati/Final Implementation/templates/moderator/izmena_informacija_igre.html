@@ -1,0 +1,161 @@
+{# Masa Jankovic 0462/19 #}
+{# template za izmenu informacija o igri #}
+
+{% extends "korisnik/base_template.html" %}
+{% load static %}
+
+{% block sign_name %}Forma za izmenu informacija o igri{% endblock %}
+
+{% block content %}
+<main class="container">
+<section class="edit-layout">
+
+    {# leva kolona: prikaz trenutnih informacija #}
+    <div class="info-panel card">
+        <h2 class="section-title">Trenutne informacije</h2>
+
+        <div class="game-preview">
+            {% if igra.slikaurl %}
+                <img src="{{ igra.slikaurl }}" alt="Prikaz slike igre">
+            {% else %}
+                <img src="{% static 'img/placeholder.png' %}" alt="Nema slike">
+            {% endif %}
+            <div class="game-info">
+                <h3>{{ igra.naziv }}</h3>
+                <p><strong>Žanr: </strong>{{ igra.zanr }}</p>
+                <p><strong>Broj igrača: </strong>{{ igra.minigraca }} - {{ igra.maxigraca }}</p>
+                <p><strong>Godina proizvodnje: </strong>{{ igra.godinaproizvodnje|date:"Y" }}</p>
+            </div>
+        </div>
+
+        <div class="current-description">
+            <h3>Opis igre</h3>
+            <p>{{ igra.opis }}</p>
+        </div>
+
+        {# poruka o uspehu, prikazuje se nakon uspesnog cuvanja #}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="status-box success-box">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    {# desna kolona: forma za izmenu #}
+    <div class="form-panel card">
+        <h2 class="section-title">Ažuriraj informacije o igri</h2>
+
+        <form method="post" class="game-edit-form" novalidate>
+            {% csrf_token %}
+
+            {# naziv igre #}
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label for="{{ form.naziv.id_for_label }}">{{ form.naziv.label }}</label>
+                    {{ form.naziv }}
+                    {% if form.naziv.errors %}
+                        <span class="field-error">{{ form.naziv.errors.0 }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# zanr i godina #}
+            <div class="form-row two-columns">
+                <div class="form-group">
+                    <label for="{{ form.zanr.id_for_label }}">{{ form.zanr.label }}</label>
+                    {{ form.zanr }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.godinaproizvodnje.id_for_label }}">
+                        {{ form.godinaproizvodnje.label }}
+                    </label>
+                    {{ form.godinaproizvodnje }}
+                </div>
+            </div>
+
+            {# min i max broj igraca #}
+            <div class="form-row two-columns">
+                <div class="form-group">
+                    <label for="{{ form.minigraca.id_for_label }}">{{ form.minigraca.label }}</label>
+                    {{ form.minigraca }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.maxigraca.id_for_label }}">{{ form.maxigraca.label }}</label>
+                    {{ form.maxigraca }}
+                </div>
+            </div>
+
+            {# greska validacije min i max (non_field_errors iz clean()) #}
+            {% if form.non_field_errors %}
+                <span class="field-error">{{ form.non_field_errors.0 }}</span>
+            {% endif %}
+
+            {# opis igre #}
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label for="{{ form.opis.id_for_label }}">{{ form.opis.label }}</label>
+                    {{ form.opis }}
+                </div>
+            </div>
+
+            {# url slike igre #}
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label for="{{ form.slikaurl.id_for_label }}">{{ form.slikaurl.label }}</label>
+                    {{ form.slikaurl }}
+                </div>
+            </div>
+
+            {# dugmad - odustani otvara dijalog, sacuvaj submit-uje formu #}
+            <div class="form-actions">
+                <button type="button" class="btn-secondary"
+                        onclick="otvoriDijalog()">Odustani</button>
+                <button type="submit" class="btn-primary">Sačuvaj izmene</button>
+            </div>
+
+        </form>
+    </div>
+</section>
+
+{# dijalog za potvrdu odustajanja #}
+<div class="dialog-overlay" id="dialogOverlay">
+    <div class="dialog-box">
+        <h3 class="dialog-title">Potvrda odustajanja</h3>
+        <p class="dialog-message">
+            Da li ste sigurni da želite da odustanete? Izmene neće biti sačuvane.
+        </p>
+        <div class="dialog-actions">
+            <button type="button" class="btn-secondary"
+                    onclick="zatvoriDijalog()">Nastavi uređivanje</button>
+            <button type="button" class="btn-danger"
+                    onclick="potvrdiOdustajanje()">Odustani</button>
+        </div>
+    </div>
+</div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // prikazuje dijalog za potvrdu odustajanja
+    function otvoriDijalog() {
+        document.getElementById('dialogOverlay').classList.add('active');
+    }
+
+    // zatvara dijalog bez akcije
+    function zatvoriDijalog() {
+        document.getElementById('dialogOverlay').classList.remove('active');
+    }
+
+    // preusmerava na stranicu igre bez cuvanja izmena
+    function potvrdiOdustajanje() {
+        zatvoriDijalog();
+        window.location.href = "{% url 'igra' name=igra.naziv %}";
+    }
+
+    // klik van dijaloga zatvara ga
+    document.getElementById('dialogOverlay').addEventListener('click', function(e) {
+        if (e.target === this) zatvoriDijalog();
+    });
+</script>
+{% endblock %}

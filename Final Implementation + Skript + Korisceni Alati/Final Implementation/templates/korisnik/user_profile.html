@@ -1,0 +1,59 @@
+<!-- Nikola Stamenkovic 2020/0723 -->
+{% extends 'korisnik/base_template.html' %}
+{% block title %}Profile{% endblock %}
+{% block sign_name %}Profilna stranica {{ korisnik.korisnickoime }} {% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-3">
+            <ul class="list-group">
+                <!-- proper links here -->
+                <li class="list-group-item"> <a href="{% url 'other-profile-games' korisnik.korisnickoime  %}"> Igre </a></li>
+                <li class="list-group-item"><a href="{% url 'other-profile-game-lists' korisnik.korisnickoime %}"> Liste </a></li>
+                <li class="list-group-item"> <a href="{% url 'other-profile-statistics' korisnik.korisnickoime%}"> Statistike </a> </li>
+                <li class="list-group-item"><a href="{% url 'other-profile-achievements' korisnik.korisnickoime %}"> Achievmenti </a></li>
+            </ul>
+        </div>
+        <div class="col-sm-6">
+            <h3> {{ korisnik.korisnickoime }}</h3>
+            {% if not prijatelj %}
+                <form method="POST" action="">
+                    {% csrf_token %}
+                  <button type="submit" class="btn btn-success">Dodaj kao prijatelj</button>
+                </form>
+            {% endif %}
+            <!--for all stats here-->
+            <h3> Igre </h3>
+            <h6> Ima </h6>
+            {% for list in ima_list %}
+                <p>{{ list.idigre.naziv }}</p>
+            {% endfor %}
+            <h6> Igrao </h6>
+            {% for list in igrao_list %}
+                <p>{{ list.idigre.naziv }}</p>
+            {% endfor %}
+            <h6> Wishlist </h6>
+            {% for list in wishlist_list %}
+                <p>{{ list.idigre.naziv }}</p>
+            {% endfor %}
+
+            <h3> Liste </h3>
+            {% for list in liste %}
+                {% ifchanged list.nazivliste %}<hr><h6>{{ list.nazivliste }}</h6>{% endifchanged %}
+                <p>{{ list.idigre.naziv }}</p>
+            {% endfor %}
+
+            <h3> Statistike </h3>
+            {% for stat in statistics %}
+                {% ifchanged stat.nazivigre %} <hr><h6> {{ stat.nazivigre }}</h6>{% endifchanged %}
+                <p> {{ stat.nazivstat }} : {{ stat.vrednost }}</p>
+            {% endfor %}
+
+            <h3> Dostignuca </h3>
+            {% for dost in dostignuca %}
+                {% ifchanged %} <hr><h4>{{ dost.dostignuce.get_igra_by_id }}</h4>{% endifchanged %}
+                <img src="{{ dost.dostignuce.slikaurl }}" alt="none" width="50" height="50">
+                <h6>{{ dost.dostignuce.naziv }}</h6>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

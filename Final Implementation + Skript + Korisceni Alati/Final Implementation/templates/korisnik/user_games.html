@@ -1,0 +1,14 @@
+<!-- Nikola Stamenkovic 2020/0723 -->
+{% extends 'korisnik/base_template.html' %}
+{% block title %}My Game Lists{% endblock %}
+{% block sign_name %}Igre korisnika {{ korisnik.korisnickoime }} {% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12">
+            {% for list in lists %}
+                {% ifchanged list.nazivliste%} <hr><h4>{{ list.nazivliste }}</h4>{% endifchanged %}
+                <p>{{ list.idigre.naziv }}</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

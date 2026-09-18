@@ -1,0 +1,41 @@
+<!-- Nikola Stamenkovic 2020/0723 -->
+{% extends 'korisnik/base_template.html' %}
+{% block title %}Azuriraj Statistiku{% endblock %}
+{% block sign_name %}Stranica Azuriranje Statistike {% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12" id="statisticlist">
+            <form method="POST" action="">
+                {% csrf_token %}
+                <button class="btn btn-primary" type="submit">Sacuvaj</button>
+                <ul class="list-group">
+                    {% for stat in statistics %}
+                        <li class="list-group-item">
+                            <p>{{ stat.naziv }}</p>
+                            {% if stat.tip == 'numericka' %}
+                                <input type="number" name="{{ stat.naziv }}">
+                            {% elif stat.tip == 'tekstualna' %}
+                                <input type="text" name="{{ stat.naziv }}">
+                            {% elif stat.tip == 'da_ne' %}
+                                <input type="radio" name="{{ stat.naziv }}" id="yes">
+                                <label for="yes">Yes</label>
+                                <input type="radio" name="{{ stat.naziv }}" id="no">
+                                <label for="no">No</label>
+                            {% elif stat.tip == 'dropdown' %}
+                                <label>
+                                    <select name="{{ stat.naziv }}">
+                                        {% for dropdownitem in stat.seperate_dropdown %}
+                                            <option>{{ dropdownitem }}</option>
+                                        {% endfor %}
+                                            <option selected="selected"></option>
+                                    </select>
+                                </label>
+                            {% endif %}
+                        </li>
+                        <a href="{% url 'stat-graph' stat.idsta %}" class="btn btn-primary" role="button">Prikazi Graficki</a>
+                    {% endfor %}
+                </ul>
+            </form>
+        </div>
+    </div>
+{% endblock %}
