@@ -126,7 +126,8 @@ def game_page_view(request, name):
             board_game_bgg_string += "%20"
 
     #Sada, potrazi sve igre u BGG koje imaju to ime
-    bgg_games = requests.get(board_game_bgg_string, headers={"Authorization": "Bearer f1e9f7ca-fc96-40fc-b94d-4cba49a2de52"}) #this gets all the games with that in its name
+    #API Key obscured for push to github, in demonstration was unobscured
+    bgg_games = requests.get(board_game_bgg_string, headers={"Authorization": "obscured api key"}) #this gets all the games with that in its name
     #sada pretrazi XML koji si dobio kako bi se nasla specificna igra koja treba
     #treba da se izvadi specifican BGG id za tu igru
     list_bgg_games = xml.etree.ElementTree.fromstring(bgg_games.content) #xmk xpath
